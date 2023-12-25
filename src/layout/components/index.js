@@ -1,0 +1,6 @@
+export { default as PageLayout } from './page-layout.vue'
+export { default as Menu} from './menu'
+export { default as Navbar} from './navbar'
+export { default as TabBar } from './tab-bar'
+export { default as Footer } from './footer'
+export { default as BreadCrumbs } from './breadCrumbs'

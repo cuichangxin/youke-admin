@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>载荷监控测试计算机</title>
+  <style>
+    #loading-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99999;
+      background-color: rgba(119, 119, 119, 0.2);
+    }
+
+    .loadingP {
+      position: absolute;
+      width: 100%;
+      height: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #load,
+    #load div {
+      position: absolute;
+      height: 36px;
+    }
+
+    #load {
+      width: 400px;
+      left: 50%;
+      top: 0;
+      margin-left: -200px;
+      overflow: visible;
+      user-select: none;
+      cursor: default;
+    }
+
+    #load div {
+      width: 20px;
+      opacity: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      animation: move 2s linear infinite;
+      transform: rotate(180deg);
+      color: #0dbff5;
+      font-size: 18px;
+    }
+
+    #load div:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    #load div:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    #load div:nth-child(4) {
+      animation-delay: .6s;
+    }
+
+    #load div:nth-child(5) {
+      animation-delay: .8s;
+    }
+
+    #load div:nth-child(6) {
+      animation-delay: 1s;
+    }
+
+    #load div:nth-child(7) {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes move {
+      0% {
+        left: 0;
+        opacity: 0;
+      }
+
+      35% {
+        left: 41%;
+        transform: rotate(0deg);
+      }
+
+      65% {
+        left: 59%;
+        transform: rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        left: 100%;
+        transform: rotate(-180deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="loading-mask">
+      <div class="loadingP darkP">
+        <div id="load">
+          <div>G</div>
+          <div>N</div>
+          <div>I</div>
+          <div>D</div>
+          <div>A</div>
+          <div>O</div>
+          <div>L</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
