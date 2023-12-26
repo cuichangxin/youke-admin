@@ -101,4 +101,8 @@ const resolvePath = (routePath) => {
   display: flex;
   align-items: center;
 }
+:deep(.i-icon){
+  display: flex;
+  align-items: center;
+}
 </style>

@@ -202,7 +202,7 @@ let message = computed(() => {
       background: rgb(var(--primary-6));
       border-radius: 100px;
       text-align: center;
-      color: var(--color-text-1);
+      color: #fff;
       opacity: 0;
       font-size: 14px;
       line-height: 36px;

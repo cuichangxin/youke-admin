@@ -15,7 +15,7 @@ export const constantRoutes = [
         path: '/index',
         name: 'Index',
         component: () => import('@/page/index.vue'),
-        meta: { title: '工作台', icon: 'icon-sun-fill' },
+        meta: { title: '工作台', icon: 'workbench' },
       },
     ]
   },
@@ -24,7 +24,7 @@ export const constantRoutes = [
     name: 'System',
     component: Layout,
     alwaysShow: true,
-    meta: { title: '系统管理', icon: 'icon-settings' },
+    meta: { title: '系统管理', icon: 'system' },
     children: [
       {
         path: '/system/user',
@@ -57,7 +57,7 @@ export const constantRoutes = [
         path: '/user/mycenter',
         component: () => import('@/page/system/user/my-center/index.vue'),
         name: 'MyCenter',
-        meta: { title: '个人中心', icon: 'icon-user', },
+        meta: { title: '个人中心', icon: 'people', },
       }
     ]
   },

@@ -37,7 +37,13 @@
               </template>
               <template #default>新增</template>
             </a-button>
-            <a-button type="primary" status="success" @click="handleUpdate" v-hasPermi="['system:user:edit']">
+            <a-button
+              type="primary"
+              status="success"
+              :disabled="single"
+              @click="handleUpdate"
+              v-hasPermi="['system:user:edit']"
+            >
               <template #icon>
                 <icon-edit />
               </template>
@@ -219,7 +225,7 @@
       <template #footer>
         <a-space>
           <a-button @click="open = false">取 消</a-button>
-          <a-button type="primary" @click="submitForm">确 定</a-button>
+          <a-button type="primary" @click="submitFormUpdate">确 定</a-button>
         </a-space>
       </template>
     </a-modal>
@@ -257,7 +263,7 @@ const roleOptions = ref([])
 const open = ref(false)
 const title = ref('')
 const initPassword = ref(undefined)
-const ids = ref([])
+const single = ref(true)
 
 const rules = {
   resetPassword: [
@@ -300,10 +306,16 @@ function reset() {
   proxy.$refs['userRef'].resetFields()
 }
 
-const search = () => {}
-const resetSearch = () => {}
+const search = () => {
+  getList()
+}
+const resetSearch = () => {
+  proxy.$refs['formRef'].resetFields()
+  dateRange.value = []
+}
 const userSelect = (rowKeys) => {
   userSelectList.value = rowKeys
+  single.value = rowKeys.length != 1
   if (rowKeys.length > 0) {
     removeFlag.value = false
   } else {
@@ -323,7 +335,7 @@ const handleAdd = () => {
 /** 修改按钮操作 */
 const handleUpdate = (row) => {
   reset()
-  const userId = row.userId || ids.value
+  const userId = row.userId || userSelectList.value
   proxy.$http.getUser(userId).then((response) => {
     form.value = response.data
     roleOptions.value = response.roles
@@ -335,9 +347,9 @@ const handleUpdate = (row) => {
 }
 /** 删除按钮操作 */
 const handleDelete = (row) => {
-  const userIds = row.userId || ids.value
+  const userIds = row.userId || userSelectList.value
   $modal.confirm({
-    title: '系统提示',
+    title: '提示',
     content: '是否确认删除用户编号为"' + userIds + '"的数据项?',
     titleAlign: 'start',
     onOk: () => {
@@ -357,6 +369,7 @@ const handleResetPwd = (row) => {
     proxy.$refs['resetPwdRef'].focus()
   })
 }
+// 重置密码提交
 const submitForm = () => {
   proxy.$refs['pwdFormRef']
     .validate()
@@ -371,6 +384,26 @@ const submitForm = () => {
     .catch(() => {})
 }
 
+// 新增/修改用户信息
+const submitFormUpdate = () => {
+  proxy.$refs['userRef']
+    .validate()
+    .then((res) => {
+      if (!res) {
+        if (form.value.userId !== undefined) {
+          proxy.$http.updateUser(form.value).then((res) => {
+            $message.success('修改成功')
+          })
+        } else {
+          proxy.$http.addUser(form.value).then((res) => {
+            $message.success('新增成功')
+          })
+        }
+      }
+    })
+    .catch(() => {})
+}
+
 /** 跳转角色分配 */
 const handleAuthUser = (row) => {
   const userId = row.userId
@@ -379,12 +412,15 @@ const handleAuthUser = (row) => {
 // 获取用户列表
 const getList = () => {
   loading.value = true
-  proxy.$http.listUser(addDateRange(queryParams.value, dateRange.value)).then((res) => {
-    loading.value = false
-    userList.value = res.rows
-  }).catch((err) => {
-    loading.value = false
-  })
+  proxy.$http
+    .listUser(addDateRange(queryParams.value, dateRange.value))
+    .then((res) => {
+      loading.value = false
+      userList.value = res.rows
+    })
+    .catch((err) => {
+      loading.value = false
+    })
 }
 onMounted(() => {
   getList()
