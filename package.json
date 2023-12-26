@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@icon-park/vue-next": "^1.4.2",
     "@vue/runtime-core": "^3.3.11",
     "@vueuse/core": "^10.7.0",
     "axios": "^1.6.2",
