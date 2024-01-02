@@ -32,11 +32,20 @@
       </div>
     </div>
     <a-divider />
+    <div class="layout-box">
+      <h5 class="title">布局</h5>
+      <div class="layout-wrapper">
+        <a-tooltip v-for="item in layoutModeList" :key="item.value" :content="item.details" position="br">
+          <div class="chose-item" :class="[`mode_${item.value}`,{active: layoutMode == item.value}]" @click="layoutMode = item.value"></div>
+        </a-tooltip>
+      </div>
+    </div>
+    <a-divider />
     <Block :options="contentOpts" :title="'内容区域'" />
     <a-divider />
     <Block :options="othersOpts" :title="'其他设置'" />
     <a-divider />
-    <a-alert>配置之后是临时生效，如需永久保存，点击下方的“保存配置”按钮。</a-alert>
+    <a-alert>配置之后是临时生效，如需保存，点击下方的“保存配置”按钮。</a-alert>
   </a-drawer>
 </template>
 
@@ -46,10 +55,13 @@ import { useAppStore } from '@/store'
 import Block from './block.vue'
 import { cloneDeep } from 'lodash'
 import { useThemeMode } from '@/hooks/themeMode'
+import layoutModeList from '@/config/menuLayout'
+import { useMenuLayout } from '@/hooks/menuLayout'
 
 const emit = defineEmits(['cancel'])
 
 const { sysColor } = useThemeMode()
+const { layoutMode } = useMenuLayout()
 const appStore = useAppStore()
 const visible = computed(() => appStore.globalSettings)
 const contentOpts = computed(() => [
@@ -128,7 +140,7 @@ onMounted(() => {
     vertical-align: -4px;
   }
 }
-.theme-box{
+.theme-box {
   margin-bottom: 20px;
 }
 .theme-info {
@@ -141,7 +153,106 @@ onMounted(() => {
   padding: 0;
   font-size: 14px;
 }
-:deep(.vc-color-wrap){
+:deep(.vc-color-wrap) {
   width: 80px !important;
+}
+.layout-box {
+}
+.layout-wrapper {
+  display: flex;
+  justify-content: space-around;
+  .chose-item {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: var(--color-fill-2);
+    border-radius: 2px;
+    box-shadow: 0 1px 2.5px #0000002e;
+    &::before {
+      content: '';
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 10px;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 10px;
+    }
+    &.active {
+      outline: 2px solid rgb(var(--primary-6));
+    }
+    &.mode_1 {
+      &::before {
+        content: 'm';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 33%;
+        height: 100%;
+        background-color: rgb(var(--primary-6));
+      }
+      &::after {
+        content: 'm';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 33%;
+        background-color: rgb(var(--primary-6));
+      }
+    }
+    &.mode_2 {
+      &::before {
+        content: 'm';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 33%;
+        background-color: rgb(var(--primary-6));
+      }
+    }
+    &.mode_3 {
+      &::before {
+        content: 'm';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 33%;
+        height: 100%;
+        background-color: rgb(var(--primary-6));
+      }
+    }
+    &.mode_4 {
+      &::before {
+        content: 'm';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 33%;
+        height: 100%;
+        background-color: rgb(var(--primary-6));
+      }
+      &::after {
+        content: '';
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 33%;
+        background-color: rgb(var(--primary-6));
+      }
+    }
+  }
 }
 </style>

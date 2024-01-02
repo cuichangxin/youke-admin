@@ -19,6 +19,7 @@
 </template>
 <script setup>
 import icons from '../icon/index.vue'
+import 'overlayscrollbars/overlayscrollbars.css'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue'
 
 const props = defineProps({

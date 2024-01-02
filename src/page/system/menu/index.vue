@@ -109,7 +109,7 @@
                 <a-popover trigger="click" position="bottom" style="width: 380px">
                   <a-input v-model="form.icon" :readonly="true" placeholder="请选择图标">
                     <template #prefix>
-                      <Icon v-if="form.icon" :icon="form.icon" size="18"></Icon>
+                      <Icon v-if="form.icon" :key="form.icon" :icon="form.icon" size="18"></Icon>
                       <icon-search v-else />
                     </template>
                   </a-input>

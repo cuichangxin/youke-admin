@@ -52,6 +52,7 @@ export const constantRoutes = [
     path: '/user',
     hidden: false,
     component: Layout,
+    meta: { title: '个人中心', icon: 'people', },
     children: [
       {
         path: '/user/mycenter',

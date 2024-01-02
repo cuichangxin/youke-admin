@@ -8,6 +8,9 @@
         </a-typography-title>
       </a-space>
     </div>
+    <div class="center-side">
+      <TopNav v-if="topNav" />
+    </div>
     <ul class="right-side">
       <li>
         <a-tooltip :content="theme === 'light' ? '点击切换为暗黑模式' : '点击切换为亮色模式'">
@@ -67,12 +70,20 @@
 import { useFullscreen, useToggle, useDark } from '@vueuse/core'
 import { useUserStore, useAppStore } from '@/store'
 import { cloneDeep } from 'lodash'
+import TopNav from '@/components/common/top-nav/menu-main.vue'
 
 const { isFullscreen, toggle: toggleFullScreen } = useFullscreen()
 const { logout } = useUserStore()
 const appStore = useAppStore()
 const theme = computed(() => {
   return appStore.theme
+})
+const topNav = computed(()=>{
+  if (appStore.layoutMode == 4 || appStore.layoutMode == 3) {
+    return false
+  }else {
+    return true
+  }
 })
 
 const isDark = useDark({
@@ -85,6 +96,8 @@ const isDark = useDark({
     appStore.toggleTheme(dark)
   },
 })
+const selectedKeys = ref([])
+const openKeys = ref([])
 const toggleTheme = useToggle(isDark)
 
 const handleLogout = () => {
@@ -97,7 +110,7 @@ const handleToggleTheme = () => {
     const darkMode = document.body.getAttribute('arco-theme')
     if (darkMode === 'dark') {
       copy.theme = 'dark'
-    }else {
+    } else {
       copy.theme = 'light'
     }
     copy.globalSettings = false
@@ -131,7 +144,6 @@ const setVisible = () => {
 .center-side {
   flex: 1;
 }
-
 .right-side {
   display: flex;
   padding-right: 20px;

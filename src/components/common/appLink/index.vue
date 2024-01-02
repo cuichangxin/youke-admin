@@ -1,5 +1,5 @@
 <template>
-  <component :is="type" v-bind="linkProps()" class="router-link">
+  <component :is="type" v-bind="linkProps()" class="router-link" :target="target ? '_target' : ''">
     <slot />
   </component>
 </template>
@@ -11,6 +11,9 @@ const props = defineProps({
     type:String,
     required:true
   },
+  target:{
+    type:Boolean,
+  }
 })
 function linkProps() {
   return {

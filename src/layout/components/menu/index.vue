@@ -6,28 +6,31 @@
     v-model:selected-keys="selectedKeys"
     @collapse="onCollapse"
   >
-    <Menu v-for="route in router.options.routes" :key="route.path" :item="route" :base-path="route.path" />
+    <Menu v-for="route in routeList" :key="route.path" :item="route" :base-path="route.path" />
   </a-menu>
 </template>
 <script setup>
 import Menu from './SideBarItem.vue'
-import { useAppStore, useTabStore } from '@/store'
+import { useAppStore, useTabStore, usePermissionStore } from '@/store'
+import { listenerRouteChange } from '@/utils/route-listener'
 
+const permissionStore = usePermissionStore()
 const appStore = useAppStore()
 const routerTag = useTabStore()
 const router = useRouter()
 const route = useRoute()
 
+const routeList = computed(() => permissionStore.sidebarRouters)
 const openKeys = ref([])
 const selectedKeys = ref([])
 
+listenerRouteChange((e) => {
+  findMenuItem(routeList.value, e.path)
+})
+
 const onCollapse = (collapsed) => {
-  appStore.updateSettings({menuCollapse:collapsed})
+  appStore.updateSettings({ menuCollapse: collapsed })
 }
-const handleMenu = (path) => {
-  findMenuItem(router.options.routes, path)
-}
-provide('handleMenu', handleMenu)
 
 function findMenuItem(data, path) {
   data.forEach((item) => {

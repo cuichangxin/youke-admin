@@ -9,7 +9,7 @@
       "
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <a-menu-item :key="resolvePath(onlyOneChild.path)" @click="menuClick(resolvePath(onlyOneChild.path))">
+        <a-menu-item :key="resolvePath(onlyOneChild.path)">
           <template #icon>
             <Icons v-if="onlyOneChild.meta.icon || item.meta.icon" :icon="onlyOneChild.meta.icon || item.meta.icon" size="20" />
           </template>
@@ -39,7 +39,7 @@
 <script setup name="SidebarItem">
 import path from 'path-browserify'
 import Icons from '@/components/common/icon'
-import appLink from './appLink.vue'
+import appLink from '@/components/common/appLink'
 import { isExternal } from '@/utils/utils'
 import usePermission from '@/hooks/permission'
 
@@ -54,12 +54,8 @@ const props = defineProps({
   },
 })
 const permission = usePermission()
-const sendMenuMessage = inject('handleMenu')
 
 const onlyOneChild = ref(null)
-const menuClick = (path) => {
-  sendMenuMessage(path)
-}
 
 const hasOneShowingChild = (children = [], parent) => {
   const showingChildren = children.filter((item) => {

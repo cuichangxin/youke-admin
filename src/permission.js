@@ -6,6 +6,7 @@ import { getToken } from './utils/auth';
 import { isHttp } from '@/utils/utils'
 import { Message } from '@arco-design/web-vue';
 import { useKeepAlive, useUserStore, usePermissionStore } from '@/store';
+import { setRouteEmitter } from '@/utils/route-listener'
 
 NProgress.configure({ showSpinner: false });
 const whiteList = ['/login', '/404', '/401'];
@@ -13,6 +14,7 @@ const whiteList = ['/login', '/404', '/401'];
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  setRouteEmitter(to)
   const userStore = useUserStore()
   const usePermission = usePermissionStore()
   // 动态添加keepalive缓存
@@ -31,22 +33,23 @@ router.beforeEach((to, from, next) => {
       if (userStore.role.length === 0) {
         userStore.info().then(() => {
           usePermission.generateRoutes().then((accessRoutes) => {
-            // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {
               if (!isHttp(route.path)) {
                 router.addRoute(route) // 动态添加可访问路由表
               }
             })
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
+            userStore.role = ['common']
+            next({ ...to, replace: true }) 
           })
         }).catch(err => {
-          userStore.logout().then(() => {
-            Message.error(err)
-            next({ path: '/' })
-          })
+          // userStore.logout().then(() => {
+          //   Message.error(err)
+          //   next({ path: '/' })
+          // })
         })
+      }else {
+        next()
       }
-      next()
     }
   } else {
     // 没有token

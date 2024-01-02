@@ -1,14 +1,30 @@
 import { defineStore } from "pinia";
 import defaultSettings from '@/config/settings.json';
+import layoutModeList from '@/config/menuLayout.json'
+
 
 const arcoSetting = JSON.parse(localStorage.getItem('arco-setting'))
 
 const useAppStore = defineStore('app', {
   state: () => {
     if (!arcoSetting) {
-      return {...defaultSettings}
-    }else {
-      return {...arcoSetting}
+      return {
+        ...defaultSettings,
+        layoutMode: layoutModeList[3].value,
+        menuPosition: 'sidebar',
+        navbarShow: true,
+        sidebarShow: true,
+        routeList: []
+      }
+    } else {
+      return {
+        ...arcoSetting,
+        layoutMode: layoutModeList[3].value,
+        menuPosition: 'sidebar',
+        navbarShow: true,
+        sidebarShow: true,
+        routeList: []
+      }
     }
   },
 
@@ -16,6 +32,9 @@ const useAppStore = defineStore('app', {
     appCurrentSetting(state) {
       return { ...state }
     },
+    getMenuPosition(){
+      return this.menuPosition
+    }
   },
   // 等待完善
   actions: {
@@ -34,8 +53,26 @@ const useAppStore = defineStore('app', {
     updateSettings(partial) {
       this.$patch(partial);
     },
-    updateThemeColor(color){
+    updateThemeColor(color) {
       this.themeColor = color
+    },
+    updateLayoutMode(mode) {
+      this.layoutMode = mode
+    },
+    updateMenuPosition(menuPosition) {
+      this.menuPosition = menuPosition
+    },
+    updateNavbar(navbarShow) {
+      this.navbarShow = navbarShow
+    },
+    updateSidebar(sidebarShow) {
+      this.sidebarShow = sidebarShow
+    },
+    setRouteList(route) {
+      this.routeList = route
+    },
+    updateMenuPositionEnum(menuPosition){
+      this.menuPosition = menuPosition
     }
   }
 })

@@ -4,6 +4,7 @@ import api from '@/api/api'
 import Layout from '@/layout/index'
 import ParentView from '@/components/common/ParentView'
 import InnerLink from '@/layout/components/InnerLink'
+import axios from 'axios'
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../page/**/*.vue')
@@ -21,7 +22,7 @@ const usePermissionStore = defineStore(
     actions: {
       setRoutes(routes) {
         this.addRoutes = routes
-        this.routes = constantRoutes.concat(routes)
+        this.routes = constantRoutes.concat(routes).filter(item=> !item.hidden)
       },
       setDefaultRoutes(routes) {
         this.defaultRoutes = constantRoutes.concat(routes)
@@ -30,15 +31,20 @@ const usePermissionStore = defineStore(
         this.topbarRouters = routes
       },
       setSidebarRouters(routes) {
-        this.sidebarRouters = routes
+        this.sidebarRouters = routes.filter(item=> !item.hidden)
       },
       generateRoutes(roles) {
         return new Promise(resolve => {
           // 向后端请求路由数据
-          api.getRouters().then(res => {
-            const sdata = JSON.parse(JSON.stringify(res.data))
-            const rdata = JSON.parse(JSON.stringify(res.data))
-            const defaultData = JSON.parse(JSON.stringify(res.data))
+          // api.getRouters().then(res => {
+          axios.get('/list').then(res => {
+            console.log(res.data,'1q1q1q1q');
+            // const sdata = JSON.parse(JSON.stringify(res.data))
+            // const rdata = JSON.parse(JSON.stringify(res.data))
+            const sdata = JSON.parse(JSON.stringify(res.data.data))
+            const rdata = JSON.parse(JSON.stringify(res.data.data))
+            // const defaultData = JSON.parse(JSON.stringify(res.data))
+            const defaultData = JSON.parse(JSON.stringify(res.data.data))
             const sidebarRoutes = filterAsyncRouter(sdata)
             const rewriteRoutes = filterAsyncRouter(rdata, false, true)
             const defaultRoutes = filterAsyncRouter(defaultData)
@@ -57,6 +63,7 @@ const usePermissionStore = defineStore(
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
+  console.log(asyncRouterMap,'asyncRouterMap');
   return asyncRouterMap.filter(route => {
     if (type && route.children) {
       route.children = filterChildren(route.children)
@@ -131,7 +138,7 @@ export function filterDynamicRoutes(routes) {
 export const loadView = (view) => {
   let res;
   for (const path in modules) {
-    const dir = path.split('views/')[1].split('.vue')[0];
+    const dir = path.split('page/')[1].split('.vue')[0];
     if (dir === view) {
       res = () => modules[path]();
     }

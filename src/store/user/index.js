@@ -19,9 +19,9 @@ const useUserStore = defineStore('user', {
     registrationDate: undefined,
     accountId: undefined,
     certification: undefined,
-    dept:'',
-    role: ['common'], // TODO: 临时的
-    permissions:[]
+    dept: '',
+    role: [], // TODO: 里面内容临时的
+    permissions: [],
   }),
 
   getters: {
@@ -37,12 +37,13 @@ const useUserStore = defineStore('user', {
     resetInfo() {
       this.$reset();
     },
+    // TODO: 暂时注释掉
     async info() {
-      return new Promise((resolve, reject) => {
-        const res = api.getUserInfo()
-        this.setInfo(res.data)
-        resolve(res)
-      })
+      // return new Promise((resolve, reject) => {
+      //   const res = api.getUserInfo()
+      //   this.setInfo(res.data)
+      //   resolve(res)
+      // })
     },
     // 不一定是这样，可能需要按照项目情况改
     async login(loginForm) {
@@ -60,7 +61,7 @@ const useUserStore = defineStore('user', {
           this.logoutCallBack()
           resolve()
         }).catch((error) => {
-            reject(error) 
+          reject(error)
         })
       })
     },

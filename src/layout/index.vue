@@ -3,43 +3,39 @@
     <div v-if="navbar" class="layout-navbar">
       <Navbar />
     </div>
-    <OverlayScrollbarsComponent defer>
+    <a-layout>
       <a-layout>
-        <a-layout>
-          <a-layout-sider
-            v-if="renderMenu"
-            v-show="!hideMenu"
-            class="layout-sider"
-            :style="{ paddingTop: navbar ? '60px' : '' }"
-            breakpoint="xl"
-            :width="menuWidth"
-            :collapsed="collapsed"
-            :collapsible="true"
-            :hide-trigger="true"
-          >
-            <div class="menu-wrapper">
-              <Menu />
-            </div>
-          </a-layout-sider>
-          <a-layout class="layout-content" :style="paddingStyle">
-            <TabBar v-if="appStore.tabBar" />
+        <a-layout-sider
+          v-if="renderMenu"
+          v-show="!hideMenu"
+          class="layout-sider"
+          :style="{ paddingTop: navbar ? '60px' : '' }"
+          breakpoint="xl"
+          :width="menuWidth"
+          :collapsed="collapsed"
+          :collapsible="true"
+          :hide-trigger="true"
+        >
+          <div class="menu-wrapper">
+            <Menu />
+          </div>
+        </a-layout-sider>
+        <a-layout class="layout-content" :style="paddingStyle">
+          <TabBar v-if="appStore.tabBar" />
             <a-layout-content>
               <BreadCrumbs />
               <PageLayout />
             </a-layout-content>
             <Footer v-if="footer" />
-          </a-layout>
         </a-layout>
       </a-layout>
-    </OverlayScrollbarsComponent>
+    </a-layout>
   </a-layout>
 </template>
 
 <script setup>
 import { PageLayout, Menu, Navbar, TabBar, Footer, BreadCrumbs } from './components'
 import { useAppStore } from '@/store'
-import 'overlayscrollbars/overlayscrollbars.css'
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue'
 
 const appStore = useAppStore()
 const collapsed = computed(() => appStore.menuCollapse)
@@ -64,14 +60,12 @@ onMounted(() => {
     document.body.style.filter = 'none'
   }
 })
-
 </script>
 
 <style scoped lang="less">
 .layout {
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
 
 .layout-navbar {
@@ -137,16 +131,5 @@ onMounted(() => {
 }
 .arco-layout-content {
   padding: 0 20px;
-}
-
-:deep(.os-theme-dark, .os-theme-light ){
-  z-index: 100;
-  --os-size:12px;
-}
-:deep(.os-scrollbar .os-scrollbar-handle){
-  background-color: var(--color-neutral-4);
-}
-:deep(.os-scrollbar .os-scrollbar-handle:hover){
-  background-color: var(--color-neutral-6);
 }
 </style>
