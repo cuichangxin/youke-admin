@@ -12,18 +12,12 @@ const useAppStore = defineStore('app', {
         ...defaultSettings,
         layoutMode: layoutModeList[3].value,
         menuPosition: 'sidebar',
-        navbarShow: true,
-        sidebarShow: true,
-        routeList: []
       }
     } else {
       return {
         ...arcoSetting,
         layoutMode: layoutModeList[3].value,
         menuPosition: 'sidebar',
-        navbarShow: true,
-        sidebarShow: true,
-        routeList: []
       }
     }
   },
@@ -63,17 +57,11 @@ const useAppStore = defineStore('app', {
       this.menuPosition = menuPosition
     },
     updateNavbar(navbarShow) {
-      this.navbarShow = navbarShow
+      this.navbar = navbarShow
     },
     updateSidebar(sidebarShow) {
-      this.sidebarShow = sidebarShow
+      this.menu = sidebarShow
     },
-    setRouteList(route) {
-      this.routeList = route
-    },
-    updateMenuPositionEnum(menuPosition){
-      this.menuPosition = menuPosition
-    }
   }
 })
 

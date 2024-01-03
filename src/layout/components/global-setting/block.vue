@@ -7,6 +7,7 @@
         :type="option.type || 'switch'"
         :name="option.key"
         :default-value="option.defaultVal"
+        :status="switchStatus"
         @input-change="handleChange"
       />
     </div>
@@ -31,6 +32,7 @@ defineProps({
 })
 const appStore = useAppStore()
 
+const switchStatus = computed(() => appStore.layoutMode)
 
 const handleChange = async ({ key, value }) => {
   if (key === 'colorWeak') {

@@ -156,8 +156,6 @@ onMounted(() => {
 :deep(.vc-color-wrap) {
   width: 80px !important;
 }
-.layout-box {
-}
 .layout-wrapper {
   display: flex;
   justify-content: space-around;
@@ -168,7 +166,7 @@ onMounted(() => {
     overflow: hidden;
     cursor: pointer;
     background-color: var(--color-fill-2);
-    border-radius: 2px;
+    border-radius: 1px;
     box-shadow: 0 1px 2.5px #0000002e;
     &::before {
       content: '';
@@ -189,7 +187,7 @@ onMounted(() => {
       font-size: 10px;
     }
     &.active {
-      outline: 2px solid rgb(var(--primary-6));
+      outline: 1px solid rgb(var(--primary-6));
     }
     &.mode_1 {
       &::before {

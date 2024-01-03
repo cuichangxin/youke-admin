@@ -5,6 +5,7 @@ import Layout from '@/layout/index'
 import ParentView from '@/components/common/ParentView'
 import InnerLink from '@/layout/components/InnerLink'
 import axios from 'axios'
+import { cloneDeep } from 'lodash'
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../page/**/*.vue')
@@ -22,29 +23,29 @@ const usePermissionStore = defineStore(
     actions: {
       setRoutes(routes) {
         this.addRoutes = routes
-        this.routes = constantRoutes.concat(routes).filter(item=> !item.hidden)
+        this.routes = constantRoutes.concat(routes).filter(item => !item.hidden)
       },
       setDefaultRoutes(routes) {
         this.defaultRoutes = constantRoutes.concat(routes)
       },
       setTopbarRoutes(routes) {
-        this.topbarRouters = routes
+        this.topbarRouters = routes.filter(item => !item.hidden)
       },
       setSidebarRouters(routes) {
-        this.sidebarRouters = routes.filter(item=> !item.hidden)
+        this.sidebarRouters = routes.filter(item => !item.hidden)
       },
       generateRoutes(roles) {
         return new Promise(resolve => {
           // 向后端请求路由数据
           // api.getRouters().then(res => {
           axios.get('/list').then(res => {
-            console.log(res.data,'1q1q1q1q');
             // const sdata = JSON.parse(JSON.stringify(res.data))
             // const rdata = JSON.parse(JSON.stringify(res.data))
-            const sdata = JSON.parse(JSON.stringify(res.data.data))
-            const rdata = JSON.parse(JSON.stringify(res.data.data))
             // const defaultData = JSON.parse(JSON.stringify(res.data))
-            const defaultData = JSON.parse(JSON.stringify(res.data.data))
+
+            const sdata = cloneDeep(res.data.data)
+            const rdata = cloneDeep(res.data.data)
+            const defaultData = cloneDeep(res.data.data)
             const sidebarRoutes = filterAsyncRouter(sdata)
             const rewriteRoutes = filterAsyncRouter(rdata, false, true)
             const defaultRoutes = filterAsyncRouter(defaultData)
@@ -52,18 +53,47 @@ const usePermissionStore = defineStore(
             asyncRoutes.forEach(route => { router.addRoute(route) })
             this.setRoutes(rewriteRoutes)
             this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
-            this.setDefaultRoutes(sidebarRoutes)
-            this.setTopbarRoutes(defaultRoutes)
+            this.setDefaultRoutes(defaultRoutes)
+            this.setTopbarRoutes(constantRoutes.concat(defaultRoutes))
             resolve(rewriteRoutes)
           })
         })
+      },
+      async updateRouteList(layoutModel, router) {
+        console.log(router.matched[0]);
+        if (layoutModel === '1') {
+          let list = cloneDeep(this.topbarRouters)
+          this.topbarRouters = list.map(item => {
+            if (item.path === '/') {
+              return item.children[0]
+            }
+            if (item.children && item.children.length === 1 && !item.alwaysShow) {
+              return item.children[0]
+            } else {
+              delete item.children
+            }
+            return item
+          })
+          if (router.matched[0].children.length > 1) {
+            let list = cloneDeep(this.routes)
+            this.sidebarRouters = list.map(item=>{
+              if (item.path === router.matched[0].path) {
+                return item.children
+              }
+            }).filter(Boolean)[0]
+          }
+        } else if (layoutModel === '3' || layoutModel === '4') {
+          this.sidebarRouters = this.routes
+        } else {
+          this.topbarRouters = this.routes
+        }
+        // console.log(this.topbarRouters);
       }
     }
   })
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
-  console.log(asyncRouterMap,'asyncRouterMap');
   return asyncRouterMap.filter(route => {
     if (type && route.children) {
       route.children = filterChildren(route.children)

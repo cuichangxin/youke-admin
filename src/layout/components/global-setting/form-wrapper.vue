@@ -6,7 +6,14 @@
     :default-value="defaultValue"
     @change="handleChange"
   />
-  <a-switch v-else :default-checked="defaultValue" size="small" @change="handleChange" />
+  <a-switch
+    v-else
+    :default-checked="defaultValue"
+    :disabled="switchStatus"
+    :model-value="defaultValue"
+    size="small"
+    @change="handleChange"
+  />
 </template>
 
 <script setup>
@@ -19,10 +26,24 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  status: {
+    type: [String, Number],
+    default: false,
+  },
   defaultValue: {
     type: [String, Boolean, Number],
     default: '',
   },
+})
+const switchStatus = computed(() => {
+  if (props.status == 3 && props.name == 'navbar') {
+    return true
+  }
+  if (props.status == 2 && props.name == 'menu') {
+    return true
+  } else {
+    return false
+  }
 })
 const emit = defineEmits(['inputChange'])
 const handleChange = (value) => {

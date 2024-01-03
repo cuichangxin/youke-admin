@@ -9,18 +9,45 @@ const routeList = Mock.mock({
     {
       component: 'Layout',
       hidden: false,
-      path: "/systems",
-      name: 'Systems',
-      meta: { title: '系统管理11' },
+      path: "/system",
+      name: 'System',
+      meta: { title: '系统管理', icon: 'system' },
       children: [
         {
-          path: '/user/indexs',
-          component: 'system/user/indexs',
-          hidden: false,
-          meta: { title: '系统1', icon: 'aiming', noCache: false }
+          path: '/system/user',
+          name: 'User',
+          component: 'system/user/index',
+          meta: { title: '用户管理', icon: '' },
+        },
+        {
+          path: '/system/role',
+          name: 'Role',
+          component: 'system/role/index',
+          meta: { title: '角色管理', icon: '' },
+        },
+        {
+          path: '/system/menu',
+          name: 'Menu',
+          component: 'system/menu/index',
+          meta: { title: '菜单管理', icon: '' },
+        },
+
+      ]
+    },
+    {
+      path: '/user',
+      hidden: false,
+      component: 'Layout',
+      meta: { title: '个人中心', icon: 'people', breadcrumb: false },
+      children: [
+        {
+          path: '/user/mycenter',
+          component: 'system/user/my-center/index',
+          name: 'MyCenter',
+          meta: { title: '个人中心', icon: 'people', },
         }
       ]
-    }
+    },
   ]
 })
 Mock.mock('/list', 'get', {

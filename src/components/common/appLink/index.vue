@@ -1,5 +1,5 @@
 <template>
-  <component :is="type" v-bind="linkProps()" class="router-link" :target="target ? '_target' : ''">
+  <component :is="type" v-bind="linkProps()" class="router-link" :target="target ? '_blank' : ''">
     <slot />
   </component>
 </template>

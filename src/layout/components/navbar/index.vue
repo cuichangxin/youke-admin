@@ -96,8 +96,6 @@ const isDark = useDark({
     appStore.toggleTheme(dark)
   },
 })
-const selectedKeys = ref([])
-const openKeys = ref([])
 const toggleTheme = useToggle(isDark)
 
 const handleLogout = () => {

@@ -1,70 +1,77 @@
 <template>
-  <a-menu mode="horizontal" :selected-keys="selectedKeys" @menu-item-click="menuClick">
-    <template v-for="(item, index) in topMenus">
-      <template v-if="item.children && item.children.length > 0">
-        <a-sub-menu :key="item.path">
-          <template #icon>
-            <Icons v-if="item.meta && item.meta.icon" :icon="item.meta.icon" size="17" />
-          </template>
-          <template #title>
-            <div style="display: inline-block">
-              {{ item.meta.title }}
-            </div>
-          </template>
-          <menuSub v-for="routSub in item.children" :key="routSub.path" :menu-item="routSub"></menuSub>
-        </a-sub-menu>
-      </template>
-
-      <template v-else>
-        <a-menu-item :key="item.key">
-          <template #icon>
-            <Icons v-if="item.meta && item.meta.icon" :icon="item.meta.icon" size="17" />
-          </template>
-          <span>{{ item.meta.title }}</span>
-        </a-menu-item>
-      </template>
-    </template>
+  <a-menu mode="horizontal" :selected-keys="selectedKey" @menu-item-click="clickMenu">
+    <topMenuItem v-for="route in routeList" :key="route.path" :item="route" :base-path="route.path" />
   </a-menu>
 </template>
 <script setup>
-import { usePermissionStore } from '@/store'
-import Icons from '@/components/common/icon'
-import menuSub from './menu-sub.vue'
+import topMenuItem from './topMenuItem.vue'
+import { listenerRouteChange } from '@/utils/route-listener'
+import { useTabStore, usePermissionStore, useAppStore } from '@/store'
+import { isHttp } from '@/utils/utils'
 
 const router = useRouter()
+const tabStore = useTabStore()
 const permissionStore = usePermissionStore()
-const routes = computed(() => permissionStore.topbarRouters)
-const selectedKeys = ref([])
-const topMenus = computed(() => {
-  let topMenus = []
-  router.options.routes.map((menu) => {
-    if (menu.hidden !== true) {
-      if (menu.path === '/') {
-        topMenus.push(menu.children[0])
-      } else {
-        topMenus.push(menu)
-      }
-    }
-  })
-  return topMenus
+const appStore = useAppStore()
+const routeList = computed(() => permissionStore.topbarRouters)
+const selectedKey = ref([])
+const routes = computed(() => permissionStore.routes)
+
+listenerRouteChange((e) => {
+  findMenuItem(routeList.value, e.path)
 })
 
-const menuClick = (key) => {
-  console.log(key)
-  if (!selectedKeys.value.includes(key)) {
-    selectedKeys.value.push(key)
+const clickMenu = (key) => {
+  if (appStore.layoutMode == 1) {
+    const keys = []
+    let nowMenu
+
+    keys.push(key)
+    selectedKey.value = keys
+
+    if (key === '/index') {
+      nowMenu = routes.value.find((item) => item.path === '/').children[0]
+    } else {
+      nowMenu = routes.value.find((item) => item.path === key)
+    }
+    if (isHttp(key)) {
+      window.open(key, '_blank')
+    } else if (!nowMenu || !nowMenu.children) {
+      appStore.updateSettings({
+        menu: false,
+      })
+      router.push({ path: key })
+    } else {
+      updateSideBarMenu(key)
+      appStore.updateSettings({
+        menu: true,
+      })
+    }
+
+  } else {
+    if (isHttp(key)) {
+      window.open(key, '_blank')
+    } else {
+      router.push({ path: key })
+    }
   }
+}
+
+function findMenuItem(data, path) {
+  data.forEach((item) => {
+    if (item.path === path) {
+      tabStore.updateTabList(item)
+    } else if (item?.children) {
+      findMenuItem(item.children, path)
+    }
+  })
 }
 
 function findRouteChange(data, path) {
   data.forEach((item) => {
     if (item.path === path) {
-      if (!selectedKeys.value.includes(item.path)) {
-        selectedKeys.value.push(item.path)
-      }
-      if (item.path.split('/').length - 1 >= 2) {
-        let list = findOpenKey(router.options.routes, item, openKeys.value)
-        openKeys.value = openKeys.value.concat(list)
+      if (!selectedKey.value.includes(item.path)) {
+        selectedKey.value.push(item.path)
       }
     } else if (item?.children) {
       findRouteChange(item.children, path)
@@ -72,11 +79,27 @@ function findRouteChange(data, path) {
   })
 }
 
+function updateSideBarMenu(key) {
+  const routeList = routes.value
+    .map((item) => {
+      if (item.path === key) return item.children
+    })
+    .filter(Boolean)[0]
+
+  if (routeList.length > 0) {
+    permissionStore.setSidebarRouters(routeList)
+  } else {
+    appStore.updateSettings({
+      menu: false,
+    })
+  }
+}
+
 watch(
   () => router.currentRoute.value,
   (n) => {
-    // selectedKeys.value = []
-    // findRouteChange(router.options.routes, n.path)
+    selectedKey.value = []
+    findRouteChange(routeList.value, n.path)
   },
   { immediate: true }
 )

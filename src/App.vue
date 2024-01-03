@@ -1,9 +1,6 @@
 <script setup>
 import GlobalSetting from './layout/components/global-setting/index.vue'
-import { useAppStore } from '@/store'
 
-const router = useRouter()
-const appStore = useAppStore()
 nextTick(() => {
   const dark = JSON.parse(localStorage.getItem('arco-setting')).theme
   if (dark === 'dark') {
@@ -11,9 +8,6 @@ nextTick(() => {
   }else {
     document.body.removeAttribute('arco-theme')
   }
-})
-onMounted(() => {
-  appStore.setRouteList(router.options.routes)
 })
 </script>
 

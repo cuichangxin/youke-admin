@@ -49,7 +49,7 @@ function findRouteChange(data, path) {
         selectedKeys.value.push(item.path)
       }
       if (item.path.split('/').length - 1 >= 2) {
-        let list = findOpenKey(router.options.routes, item, openKeys.value)
+        let list = findOpenKey(routeList.value, item, openKeys.value)
         openKeys.value = openKeys.value.concat(list)
       }
     } else if (item?.children) {
@@ -77,12 +77,12 @@ watch(
   () => router.currentRoute.value,
   (n) => {
     selectedKeys.value = []
-    findRouteChange(router.options.routes, n.path)
+    findRouteChange(routeList.value, n.path)
   },
   { immediate: true }
 )
 onMounted(async () => {
-  await routerTag.initTabBar(router.options.routes, route.path)
+  await routerTag.initTabBar(routeList.value, route.path)
 })
 </script>
 <style lang="less" scoped></style>

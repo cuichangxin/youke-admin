@@ -22,11 +22,11 @@
         </a-layout-sider>
         <a-layout class="layout-content" :style="paddingStyle">
           <TabBar v-if="appStore.tabBar" />
-            <a-layout-content>
-              <BreadCrumbs />
-              <PageLayout />
-            </a-layout-content>
-            <Footer v-if="footer" />
+          <a-layout-content>
+            <BreadCrumbs />
+            <PageLayout />
+          </a-layout-content>
+          <Footer v-if="footer" />
         </a-layout>
       </a-layout>
     </a-layout>
