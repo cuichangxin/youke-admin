@@ -20,7 +20,7 @@ const useUserStore = defineStore('user', {
     accountId: undefined,
     certification: undefined,
     dept: '',
-    role: [], // TODO: 里面内容临时的
+    role: [],
     permissions: [],
   }),
 

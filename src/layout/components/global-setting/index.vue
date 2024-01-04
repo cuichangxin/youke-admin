@@ -36,7 +36,11 @@
       <h5 class="title">布局</h5>
       <div class="layout-wrapper">
         <a-tooltip v-for="item in layoutModeList" :key="item.value" :content="item.details" position="br">
-          <div class="chose-item" :class="[`mode_${item.value}`,{active: layoutMode == item.value}]" @click="layoutMode = item.value"></div>
+          <div
+            class="chose-item"
+            :class="[`mode_${item.value}`, { active: layoutMode == item.value }]"
+            @click="changeMode(item.value)"
+          ></div>
         </a-tooltip>
       </div>
     </div>
@@ -97,6 +101,11 @@ const othersOpts = computed(() => [
     key: 'colorWeak',
     defaultVal: appStore.colorWeak,
   },
+  {
+    name: '灰色模式',
+    key: 'greyMode',
+    defaultVal: appStore.greyMode,
+  },
 ])
 const pureColor = ref(appStore.themeColor)
 const gradientColor = ref('linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%)')
@@ -123,6 +132,11 @@ const saveSettings = async () => {
 }
 const setVisible = () => {
   appStore.updateSettings({ globalSettings: true })
+}
+const changeMode = (value) => {
+  if (layoutMode.value !== value) {
+    layoutMode.value = value
+  }
 }
 onMounted(() => {
   sysColor.value = pureColor.value
@@ -161,12 +175,12 @@ onMounted(() => {
   justify-content: space-around;
   .chose-item {
     position: relative;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     overflow: hidden;
     cursor: pointer;
     background-color: var(--color-fill-2);
-    border-radius: 1px;
+    border-radius: 4px;
     box-shadow: 0 1px 2.5px #0000002e;
     &::before {
       content: '';
@@ -187,11 +201,11 @@ onMounted(() => {
       font-size: 10px;
     }
     &.active {
-      outline: 1px solid rgb(var(--primary-6));
+      border: 2px solid rgb(var(--primary-7));
     }
     &.mode_1 {
       &::before {
-        content: 'm';
+        content: '';
         top: 0;
         left: 0;
         z-index: 1;
@@ -200,7 +214,7 @@ onMounted(() => {
         background-color: rgb(var(--primary-6));
       }
       &::after {
-        content: 'm';
+        content: '';
         top: 0;
         left: 0;
         z-index: 1;
@@ -211,7 +225,7 @@ onMounted(() => {
     }
     &.mode_2 {
       &::before {
-        content: 'm';
+        content: '';
         top: 0;
         left: 0;
         z-index: 1;
@@ -222,7 +236,7 @@ onMounted(() => {
     }
     &.mode_3 {
       &::before {
-        content: 'm';
+        content: '';
         top: 0;
         left: 0;
         z-index: 1;
@@ -233,7 +247,7 @@ onMounted(() => {
     }
     &.mode_4 {
       &::before {
-        content: 'm';
+        content: '';
         top: 0;
         left: 0;
         z-index: 1;

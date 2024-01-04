@@ -12,12 +12,12 @@ const useAppStore = defineStore('app', {
         ...defaultSettings,
         layoutMode: layoutModeList[3].value,
         menuPosition: 'sidebar',
+        selectKeys:''
       }
     } else {
       return {
         ...arcoSetting,
-        layoutMode: layoutModeList[3].value,
-        menuPosition: 'sidebar',
+        selectKeys:''
       }
     }
   },
@@ -62,6 +62,9 @@ const useAppStore = defineStore('app', {
     updateSidebar(sidebarShow) {
       this.menu = sidebarShow
     },
+    updateSelectedKeys(selectedKeys){
+      this.selectKeys = selectedKeys
+    }
   }
 })
 

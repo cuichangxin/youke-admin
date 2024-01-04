@@ -38,14 +38,14 @@ router.beforeEach((to, from, next) => {
                 router.addRoute(route) // 动态添加可访问路由表
               }
             })
-            userStore.role = ['common']
+            userStore.role = ['common'] // TODO: 临时
             next({ ...to, replace: true }) 
           })
         }).catch(err => {
-          // userStore.logout().then(() => {
-          //   Message.error(err)
-          //   next({ path: '/' })
-          // })
+          userStore.logout().then(() => {
+            Message.error(err)
+            next({ path: '/' })
+          })
         })
       }else {
         next()

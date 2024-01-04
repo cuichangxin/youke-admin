@@ -17,19 +17,19 @@ const routeList = Mock.mock({
           path: '/system/user',
           name: 'User',
           component: 'system/user/index',
-          meta: { title: '用户管理', icon: '' },
+          meta: { title: '用户管理', icon: 'every-user' },
         },
         {
           path: '/system/role',
           name: 'Role',
           component: 'system/role/index',
-          meta: { title: '角色管理', icon: '' },
+          meta: { title: '角色管理', icon: 'permissions' },
         },
         {
           path: '/system/menu',
           name: 'Menu',
           component: 'system/menu/index',
-          meta: { title: '菜单管理', icon: '' },
+          meta: { title: '菜单管理', icon: 'tree-list' },
         },
 
       ]

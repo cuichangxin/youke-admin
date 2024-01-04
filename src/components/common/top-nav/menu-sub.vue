@@ -1,55 +1,33 @@
 <template>
-  <span v-if="!item.hidden">
-    <template
-      v-if="
-        hasOneShowingChild(item.children, item) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.alwaysShow
-      "
-    >
-      <a-menu-item :key="resolvePath(onlyOneChild.path)">
-        <template #icon>
-          <Icons
-            v-if="onlyOneChild.meta.icon || item.meta.icon"
-            :icon="onlyOneChild.meta.icon || item.meta.icon"
-            size="19"
-          />
-        </template>
-        <span>{{ onlyOneChild.meta.title }}</span>
-      </a-menu-item>
-    </template>
+  <template v-if="!menuItem.children && !menuItem.alwaysShow">
+    <a-menu-item :key="menuItem.path">
+      <template #icon>
+        <Icons v-if="menuItem.meta.icon" :icon="menuItem.meta.icon" size="19" />
+      </template>
+      <span>{{ menuItem.meta.title }}</span>
+    </a-menu-item>
+  </template>
 
-    <template v-else>
-      <a-sub-menu :key="resolvePath(item.path)">
-        <template #icon>
-          <Icons :icon="item.meta.icon" size="19" />
-        </template>
-        <template #title>
-          <span>{{ item.meta.title }}</span>
-        </template>
-        <TopBarItem
-          v-for="child in item.children"
-          :key="child.path"
-          :item="child"
-          :base-path="resolvePath(child.path)"
-        />
-      </a-sub-menu>
-    </template>
-  </span>
+  <template v-else>
+    <a-sub-menu :key="menuItem.path">
+      <template #icon>
+        <Icons :icon="menuItem.meta.icon" size="19" />
+      </template>
+      <template #title>
+        <span>{{ menuItem.meta.title }}</span>
+      </template>
+      <menuSub v-for="child in menuItem.children" :key="child.path" :menu-item="child" />
+    </a-sub-menu>
+  </template>
 </template>
-<script setup name="TopBarItem">
-import path from 'path-browserify'
+<script setup name="menuSub">
 import Icons from '@/components/common/icon'
-import { isExternal } from '@/utils/utils'
+import { isExternal, getNormalPath } from '@/utils/utils'
 
 const props = defineProps({
-  item: {
+  menuItem: {
     type: [Array, Object],
     required: true,
-  },
-  basePath: {
-    type: String,
-    default: '',
   },
 })
 
@@ -65,12 +43,10 @@ const hasOneShowingChild = (children = [], parent) => {
       return true
     }
   })
-
   // 当只有一个子路由器时，默认显示该子路由器
   if (showingChildren.length === 1) {
     return true
   }
-
   // 如果没有要显示的子路由器，则显示父路由器
   if (showingChildren.length === 0) {
     onlyOneChild.value = { ...parent, path: '', noShowingChildren: true }
@@ -84,10 +60,7 @@ const resolvePath = (routePath) => {
   if (isExternal(routePath)) {
     return routePath
   }
-  if (isExternal(props.basePath)) {
-    return props.basePath
-  }
-  return path.resolve(props.basePath, routePath)
+  return getNormalPath(routePath)
 }
 </script>
 <style lang="less" scoped>

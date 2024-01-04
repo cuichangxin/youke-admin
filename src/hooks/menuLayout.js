@@ -14,13 +14,19 @@ export function useMenuLayout() {
       updateLayoutModel(val)
     }
   })
+  const selectKeys = computed({
+    get: () => appStore.selectKeys,
+    set: val => {
+      updateSelectedKeys(val)
+    }
+  })
 
   const updateLayoutModel = (layoutModel) => {
     const findFix = layoutModeList.find(item => item.value === layoutModel)
     updateMenuPosition(findFix.menuPosition)
     updateNavbar(findFix.navbarShow)
     updateSidebar(findFix.sidebarShow)
-    updateRouteList(layoutModel,route)
+    updateRouteList(layoutModel, route)
     appStore.updateLayoutMode(layoutModel)
   }
   const updateMenuPosition = (menuPosition) => {
@@ -33,24 +39,32 @@ export function useMenuLayout() {
   const updateSidebar = (value) => {
     appStore.updateSidebar(value)
   }
-  const updateRouteList = (value,route) => {
-    if (route.matched[0].children.length <= 1) {
-      appStore.updateSettings({
-        menu:false
-      })
-    }else {
-      appStore.updateSettings({
-        menu:true
-      })
+  const updateSelectedKeys = (value) => {
+    appStore.updateSelectedKeys(value)
+  }
+  const updateRouteList = async (value, route) => {
+    if (value == 1) {
+      if (route.matched[0].children.length <= 1) {
+        appStore.updateSettings({
+          menu: false
+        })
+      } else {
+        appStore.updateSettings({
+          menu: true
+        })
+
+      }
     }
-    permissionStore.updateRouteList(value,route)
+    permissionStore.updateRouteList(value, route)
   }
 
   return {
     layoutMode,
+    selectKeys,
     updateLayoutModel,
     updateMenuPosition,
     updateNavbar,
-    updateSidebar
+    updateSidebar,
+    updateSelectedKeys
   }
 }

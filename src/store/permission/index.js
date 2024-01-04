@@ -37,6 +37,7 @@ const usePermissionStore = defineStore(
       generateRoutes(roles) {
         return new Promise(resolve => {
           // 向后端请求路由数据
+          // TODO: 临时
           // api.getRouters().then(res => {
           axios.get('/list').then(res => {
             // const sdata = JSON.parse(JSON.stringify(res.data))
@@ -60,7 +61,6 @@ const usePermissionStore = defineStore(
         })
       },
       async updateRouteList(layoutModel, router) {
-        console.log(router.matched[0]);
         if (layoutModel === '1') {
           let list = cloneDeep(this.topbarRouters)
           this.topbarRouters = list.map(item => {
@@ -83,11 +83,11 @@ const usePermissionStore = defineStore(
             }).filter(Boolean)[0]
           }
         } else if (layoutModel === '3' || layoutModel === '4') {
-          this.sidebarRouters = this.routes
+          this.sidebarRouters = cloneDeep(this.routes)
         } else {
-          this.topbarRouters = this.routes
+          this.topbarRouters = cloneDeep(this.routes)
+          this.sidebarRouters = []
         }
-        // console.log(this.topbarRouters);
       }
     }
   })

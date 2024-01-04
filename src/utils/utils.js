@@ -101,3 +101,15 @@ export const changeArcoPrimaryColor = (color, dark = false, propertyPre = "--pri
 export function getArcoColors(color, dark = false) {
   return generate(color, { dark: dark, list: true, index: 6, format: "rgb" })
 }
+
+// 返回项目路径
+export function getNormalPath(p) {
+  if (p.length === 0 || !p || p == 'undefined') {
+    return p
+  };
+  let res = p.replace('//', '/')
+  if (res[res.length - 1] === '/') {
+    return res.slice(0, res.length - 1)
+  }
+  return res;
+}

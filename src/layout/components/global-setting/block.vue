@@ -38,6 +38,9 @@ const handleChange = async ({ key, value }) => {
   if (key === 'colorWeak') {
     document.body.style.filter = value ? 'invert(80%)' : 'none'
   }
+  if (key === 'greyMode') {
+    document.body.style.filter = value ? 'grayscale(100%)' : 'none'
+  }
   if (key === 'topMenu') {
     appStore.updateSettings({
       menuCollapse: false,
