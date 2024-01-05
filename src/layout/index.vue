@@ -36,6 +36,9 @@
 <script setup>
 import { PageLayout, Menu, Navbar, TabBar, Footer, BreadCrumbs } from './components'
 import { useAppStore } from '@/store'
+import { useMenuLayout } from '@/hooks/menuLayout'
+
+const { layoutMode } = useMenuLayout()
 
 const appStore = useAppStore()
 const collapsed = computed(() => appStore.menuCollapse)
@@ -46,6 +49,8 @@ const menuWidth = computed(() => {
   return appStore.menuCollapse ? 48 : appStore.menuWidth
 })
 const isColorWeak = computed(() => appStore.colorWeak)
+const greyMode = computed(() => appStore.greyMode)
+const theme = computed(() => appStore.theme)
 const footer = computed(() => appStore.footer)
 const paddingStyle = computed(() => {
   const paddingLeft = renderMenu.value && !hideMenu.value ? { paddingLeft: `${menuWidth.value}px` } : {}
@@ -54,10 +59,16 @@ const paddingStyle = computed(() => {
 })
 
 onMounted(() => {
+  if (theme.value === 'dark') {
+    document.body.setAttribute('arco-theme', 'dark')
+  } else {
+    document.body.removeAttribute('arco-theme')
+  }
+  layoutMode.value = appStore.layoutMode
   if (isColorWeak.value) {
     document.body.style.filter = 'invert(80%)'
-  } else {
-    document.body.style.filter = 'none'
+  } else if (greyMode.value) {
+    document.body.style.filter = 'grayscale(100%)'
   }
 })
 </script>

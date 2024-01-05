@@ -1,4 +1,5 @@
 import { generate } from "@arco-design/color/src/index"
+import router from '../router'
 
 /**
  * 判断path是否为外链
@@ -112,4 +113,22 @@ export function getNormalPath(p) {
     return res.slice(0, res.length - 1)
   }
   return res;
+}
+
+// 刷新当前tab页签
+export function refreshPage(obj) {
+  const { path, query, matched } = router.currentRoute.value;
+  if (obj === undefined) {
+    matched.forEach((m) => {
+      if (m.components && m.components.default && m.components.default.name) {
+        if (!['Layout', 'ParentView'].includes(m.components.default.name)) {
+          obj = { name: m.components.default.name, path: path, query: query };
+        }
+      }
+    });
+  }
+  router.replace({
+    path: '/redirect' + obj.value.path,
+    query: obj.value.query
+  })
 }

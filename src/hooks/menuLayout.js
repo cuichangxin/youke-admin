@@ -68,3 +68,5 @@ export function useMenuLayout() {
     updateSelectedKeys
   }
 }
+
+export default useMenuLayout

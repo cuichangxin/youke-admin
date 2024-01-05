@@ -53,6 +53,10 @@ const useTabStore = defineStore('tab', {
           this.initTabBar(item.children, path)
         }
       })
+      const index = this.multipage.findIndex(item=> item.path === '/index')
+      const item = this.multipage.find(item=> item.path === '/index')
+      this.multipage.splice(index,1)
+      this.multipage.unshift(item)
     },
   }
 })

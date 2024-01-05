@@ -38,6 +38,17 @@ export const constantRoutes = [
     ]
   },
   {
+    path:'/redirect',
+    component:Layout,
+    hidden: true,
+    children:[
+      {
+        path:'/redirect/:path(.*)',
+        component:() => import('@/page/redirect/index.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     hidden: true,
     component: () => import('@/page/login.vue'),

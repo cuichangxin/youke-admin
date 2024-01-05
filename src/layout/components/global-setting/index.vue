@@ -179,7 +179,7 @@ onMounted(() => {
     height: 45px;
     overflow: hidden;
     cursor: pointer;
-    background-color: var(--color-fill-2);
+    background-color: #f0f2f5;
     border-radius: 4px;
     box-shadow: 0 1px 2.5px #0000002e;
     &::before {
@@ -209,7 +209,7 @@ onMounted(() => {
         top: 0;
         left: 0;
         z-index: 1;
-        width: 33%;
+        width: 30%;
         height: 100%;
         background-color: rgb(var(--primary-6));
       }
@@ -219,7 +219,7 @@ onMounted(() => {
         left: 0;
         z-index: 1;
         width: 100%;
-        height: 33%;
+        height: 30%;
         background-color: rgb(var(--primary-6));
       }
     }
@@ -230,7 +230,7 @@ onMounted(() => {
         left: 0;
         z-index: 1;
         width: 100%;
-        height: 33%;
+        height: 30%;
         background-color: rgb(var(--primary-6));
       }
     }
@@ -240,7 +240,7 @@ onMounted(() => {
         top: 0;
         left: 0;
         z-index: 1;
-        width: 33%;
+        width: 30%;
         height: 100%;
         background-color: rgb(var(--primary-6));
       }
@@ -251,7 +251,7 @@ onMounted(() => {
         top: 0;
         left: 0;
         z-index: 1;
-        width: 33%;
+        width: 30%;
         height: 100%;
         background-color: rgb(var(--primary-6));
       }
@@ -259,10 +259,9 @@ onMounted(() => {
         content: '';
         top: 0;
         left: 0;
-        z-index: 1;
         width: 100%;
-        height: 33%;
-        background-color: rgb(var(--primary-6));
+        height: 27%;
+        background-color: #fff;
       }
     }
   }

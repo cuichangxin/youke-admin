@@ -38,6 +38,7 @@
 
 <script setup>
 import { useTabStore } from '@/store'
+import { refreshPage } from '@/utils/utils'
 
 const props = defineProps({
   itemData: {
@@ -99,9 +100,7 @@ const actionSelect = async (value) => {
     tabBarStore.clearRouterTag()
     router.push({ path: '/' })
   } else {
-    await router.replace({
-      name: itemData.name
-    })
+    refreshPage(router.currentRoute)
   }
 }
 </script>
