@@ -10,35 +10,15 @@
     <template v-for="(route, index) in routeList">
       <template v-if="!route.hidden">
         <template v-if="hasOneShowingChild(route.children, route) && !route.alwaysShow">
-          <appLink :to="route.path" :target="isHttp(route.path)">
-            <a-menu-item
-              :key="
-                route.path == '/'
-                  ? onlyOneChild.path
-                  : !route.alwaysShow && route.children && route.children.length === 1
-                  ? route.children[0].path
-                  : route.path
-              "
-            >
+          <appLink :to="showRouteInfo(route).path" :target="isHttp(showRouteInfo(route).path)">
+            <a-menu-item :key="showRouteInfo(route).path">
               <template #icon>
                 <Icons
-                  :icon="
-                    route.path == '/'
-                      ? onlyOneChild.meta.icon
-                      : !route.alwaysShow && route.children && route.children.length === 1
-                      ? route.children[0].meta.icon
-                      : route.meta.icon
-                  "
+                  :icon="showRouteInfo(route).meta.icon"
                   size="19"
                 />
               </template>
-              <span>{{
-                route.path === '/'
-                  ? onlyOneChild.meta.title
-                  : !route.alwaysShow && route.children && route.children.length === 1
-                  ? route.children[0].meta.title
-                  : route.meta.title
-              }}</span>
+              <span>{{ showRouteInfo(route).meta.title }}</span>
             </a-menu-item>
           </appLink>
         </template>
@@ -146,6 +126,16 @@ const hasOneShowingChild = (children = [], parent) => {
     return true
   }
   return false
+}
+
+const showRouteInfo = (item) => {
+  if (item.path === '/') {
+    return item.children[0]
+  } else if (!item.alwaysShow && item.children && item.children.length === 1) {
+    return item.children[0]
+  } else {
+    return item
+  }
 }
 
 watch(

@@ -44,19 +44,23 @@ const useTabStore = defineStore('tab', {
     },
     initTabBar(list, path) {
       list.forEach(item => {
-        if (item.path == '/index') {
-          this.updateTabList(item)
-        }
-        if (item.path === path) {
-          this.updateTabList(item)
-        } else if (item?.children) {
-          this.initTabBar(item.children, path)
+        if (!item.hidden) {
+          if (item.path == '/index') {
+            this.updateTabList(item)
+          }
+          if (item.path === path) {
+            this.updateTabList(item)
+          } else if (item?.children) {
+            this.initTabBar(item.children, path)
+          }
         }
       })
-      const index = this.multipage.findIndex(item=> item.path === '/index')
-      const item = this.multipage.find(item=> item.path === '/index')
-      this.multipage.splice(index,1)
-      this.multipage.unshift(item)
+      const item = this.multipage.find(item => item.path === '/index')
+      if (item) {
+        const index = this.multipage.findIndex(item => item.path === '/index')
+        this.multipage.splice(index, 1)
+        this.multipage.unshift(item)
+      }
     },
   }
 })

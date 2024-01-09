@@ -27,3 +27,5 @@ directive(app)
 app.config.globalProperties.$http = axios
 
 app.mount('#app')
+
+console.log(` %c youke-admin-template %c 启动成功！`, "color: #fadfa3; background: #030307; padding:5px 0;", "background: #fadfa3; padding:5px 0;")

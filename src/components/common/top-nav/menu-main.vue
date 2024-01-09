@@ -4,34 +4,11 @@
     <template v-for="(route, index) in routeList">
       <template v-if="!route.hidden">
         <template v-if="hasOneShowingChild(route.children, route) && !route.alwaysShow">
-          <a-menu-item
-            :key="
-              route.path == '/'
-                ? onlyOneChild.path
-                : !route.alwaysShow && route.children && route.children.length === 1
-                ? route.children[0].path
-                : route.path
-            "
-          >
+          <a-menu-item :key="showRouteInfo(route).path">
             <template #icon>
-              <Icons
-                :icon="
-                  route.path == '/'
-                    ? onlyOneChild.meta.icon
-                    : !route.alwaysShow && route.children && route.children.length === 1
-                    ? route.children[0].meta.icon
-                    : route.meta.icon
-                "
-                size="19"
-              />
+              <Icons :icon="showRouteInfo(route).meta.icon" size="19" />
             </template>
-            <span>{{
-              route.path === '/'
-                ? onlyOneChild.meta.title
-                : !route.alwaysShow && route.children && route.children.length === 1
-                ? route.children[0].meta.title
-                : route.meta.title
-            }}</span>
+            <span>{{showRouteInfo(route).meta.title}}</span>
           </a-menu-item>
         </template>
         <template v-else>
@@ -150,6 +127,16 @@ function updateSideBarMenu(key) {
     appStore.updateSettings({
       menu: false,
     })
+  }
+}
+
+const showRouteInfo = (item) => {
+  if (item.path === '/') {
+    return item.children[0]
+  } else if (!item.alwaysShow && item.children && item.children.length === 1) {
+    return item.children[0]
+  } else {
+    return item
   }
 }
 
