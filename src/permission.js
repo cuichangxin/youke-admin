@@ -5,8 +5,11 @@ import 'nprogress/nprogress.css'
 import { getToken } from './utils/auth';
 import { isHttp } from '@/utils/utils'
 import { Message } from '@arco-design/web-vue';
-import { useKeepAlive, useUserStore, usePermissionStore } from '@/store';
+import { useKeepAlive, useUserStore, usePermissionStore, useAppStore } from '@/store';
 import { setRouteEmitter } from '@/utils/route-listener'
+import useLoading from '@/hooks/useLoading'
+
+const LOADING = useLoading()
 
 NProgress.configure({ showSpinner: false });
 const whiteList = ['/login', '/404', '/401'];
@@ -17,6 +20,8 @@ router.beforeEach((to, from, next) => {
   setRouteEmitter(to)
   const userStore = useUserStore()
   const usePermission = usePermissionStore()
+  const appStore = useAppStore()
+
   // 动态添加keepalive缓存
   if (!to.meta.noCache) {
     const { addKeepAlive } = useKeepAlive()
@@ -24,6 +29,9 @@ router.beforeEach((to, from, next) => {
   }
   // 有token
   if (getToken()) {
+    if (to.path !== '/login') {
+      if (appStore.loading) LOADING.showLoading()
+    }
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
@@ -39,7 +47,7 @@ router.beforeEach((to, from, next) => {
               }
             })
             userStore.role = ['common'] // TODO: 临时
-            next({ ...to, replace: true }) 
+            next({ ...to, replace: true })
           })
         }).catch(err => {
           userStore.logout().then(() => {
@@ -47,7 +55,7 @@ router.beforeEach((to, from, next) => {
             next({ path: '/' })
           })
         })
-      }else {
+      } else {
         next()
       }
     }
@@ -64,4 +72,5 @@ router.beforeEach((to, from, next) => {
 })
 router.afterEach(() => {
   NProgress.done()
+  LOADING.hideLoading()
 })

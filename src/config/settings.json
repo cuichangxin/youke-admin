@@ -11,5 +11,6 @@
   "themeColor": "#165DFF",
   "menuWidth": 200,
   "globalSettings": false,
-  "tabBar": false
+  "tabBar": false,
+  "loading": true
 }

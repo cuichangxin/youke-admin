@@ -2,7 +2,12 @@
   <div class="block">
     <h5 class="title">{{ title }}</h5>
     <div v-for="option in options" :key="option.name" class="switch-wrapper">
-      <span>{{ option.name }}</span>
+      <div>
+        <span style="margin-right: 4px;">{{ option.name }}</span>
+        <a-tooltip v-if="option.tooltip" :content="option.content">
+          <icon-question-circle />
+        </a-tooltip>
+      </div>
       <form-wrapper
         :type="option.type || 'switch'"
         :name="option.key"

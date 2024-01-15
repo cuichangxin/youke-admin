@@ -36,10 +36,7 @@ const props = defineProps({
   },
 })
 const switchStatus = computed(() => {
-  if (props.status == 3 && props.name == 'navbar') {
-    return true
-  }
-  if (props.status == 2 && props.name == 'menu') {
+  if ((props.status == 3 && props.name == 'navbar') || (props.status == 2 && props.name == 'menu') || (props.status == 1 && props.name == 'menu')) {
     return true
   } else {
     return false

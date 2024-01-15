@@ -8,10 +8,11 @@ import axios from './api/api'
 import router from './router';
 import { createPinia } from 'pinia'
 import '@/assets/styles/index.less'
-import './permission'
 import directive from './directive'
 import Vue3ColorPicker from "vue3-colorpicker";
 import "vue3-colorpicker/style.css";
+import './permission'
+
 import '/mock/route'
 
 const app = createApp(App)
@@ -26,6 +27,7 @@ directive(app)
 
 app.config.globalProperties.$http = axios
 
+
 app.mount('#app')
 
-console.log(` %c youke-admin-template %c 启动成功！`, "color: #fadfa3; background: #030307; padding:5px 0;", "background: #fadfa3; padding:5px 0;")
+console.log(` %c ${document.title} %c 启动成功！`, "color: #fadfa3; background: #030307; padding:5px 0;", "background: #fadfa3; padding:5px 0;")

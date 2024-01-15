@@ -3,11 +3,12 @@
     <a-affix ref="affixRef" :offset-top="offsetTop">
       <div class="tab-bar-box">
         <div class="tab-bar-scroll">
-          <div class="tags-wrap">
-            <tab-item v-for="(tag, index) in tagList" :key="index" :index="index" :item-data="tag" />
-          </div>
+          <a-scrollbar style="overflow: auto">
+            <div class="tags-wrap">
+              <tab-item v-for="(tag, index) in tagList" :key="index" :index="index" :item-data="tag" />
+            </div>
+          </a-scrollbar>
         </div>
-        <div class="tag-bar-operation"></div>
       </div>
     </a-affix>
   </div>
@@ -46,7 +47,6 @@ const offsetTop = computed(() => {
         padding: 4px 0;
         height: 48px;
         white-space: nowrap;
-        overflow-x: auto;
 
         :deep(.arco-tag) {
           display: inline-flex;
@@ -62,10 +62,15 @@ const offsetTop = computed(() => {
       }
     }
   }
-
-  .tag-bar-operation {
-    width: 100px;
-    height: 32px;
+}
+.arco-scrollbar {
+  height: 48px;
+  position: static;
+}
+:deep(.arco-scrollbar-track-direction-horizontal){
+  bottom: -12px;
+  .arco-scrollbar-thumb-bar{
+    height: 6px;
   }
 }
 </style>

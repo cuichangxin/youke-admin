@@ -6,21 +6,17 @@
       </template>
     </a-input>
   </div>
-  <OverlayScrollbarsComponent defer>
-    <div class="icon_list">
-      <div class="icon_wrapper" v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
-        <div :class="['icon_item', { active: activeIcon === item }]">
-          <icons :icon="item" size="19"></icons>
-          <div class="icon_title">{{ item }}</div>
-        </div>
+  <div class="icon_list">
+    <div class="icon_wrapper" v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
+      <div :class="['icon_item', { active: activeIcon === item }]">
+        <icons :icon="item" size="19"></icons>
+        <div class="icon_title">{{ item }}</div>
       </div>
     </div>
-  </OverlayScrollbarsComponent>
+  </div>
 </template>
 <script setup>
 import icons from '../icon/index.vue'
-import 'overlayscrollbars/overlayscrollbars.css'
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue'
 
 const props = defineProps({
   activeIcon: {
@@ -114,6 +110,7 @@ onMounted(() => {
   max-height: 200px;
   display: flex;
   flex-wrap: wrap;
+  overflow: auto;
   .icon_wrapper {
     height: 26px;
     margin: 8px 3px;
@@ -127,12 +124,12 @@ onMounted(() => {
         margin-left: 3px;
       }
       &:hover {
-        background-color: #ececec;
+        background-color: var(--color-fill-2);
         border-radius: 5px;
       }
     }
     .icon_item.active {
-      background-color: #ececec;
+      background-color: var(--color-fill-2);
       border-radius: 5px;
     }
   }

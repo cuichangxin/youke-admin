@@ -72,24 +72,36 @@ const file = {
 }
 const renderData = [
   {
-    label: '用户名',
+    label: '姓名',
     value: userStore.name,
   },
   {
-    label: '账号ID',
-    value: userStore.accountId,
+    label: '用户名',
+    value: userStore.userName,
   },
   {
     label: '账号ID',
     value: userStore.accountId,
   },
   {
-    label: '单位',
-    value: userStore.dept,
+    label: '手机号',
+    value: userStore.phone,
+  },
+  {
+    label: '邮箱',
+    value: userStore.email,
+  },
+  {
+    label: '角色',
+    value: userStore.roleGroup,
   },
   {
     label: '注册时间',
     value: userStore.registrationDate,
+  },
+  {
+    label: '单位',
+    value: userStore.dept,
   },
 ]
 const fileList = ref([file])
@@ -155,7 +167,6 @@ const customRequest = (options) => {
 }
 .wrapper {
   padding: 20px 0 0 20px;
-  min-height: 580px;
   background-color: var(--color-bg-2);
   border-radius: 4px;
 }

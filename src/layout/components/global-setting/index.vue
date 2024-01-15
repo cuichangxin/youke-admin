@@ -77,11 +77,7 @@ const contentOpts = computed(() => [
   },
   { name: '底部', key: 'footer', defaultVal: appStore.footer },
   { name: '多页签', key: 'tabBar', defaultVal: appStore.tabBar },
-  // {
-  //   name: '菜单来源后台',
-  //   key: 'menuFromServer',
-  //   defaultVal: appStore.menuFromServer,
-  // },
+  { name: '全局加载', key: 'loading', defaultVal: appStore.loading,tooltip:true,content:'进入页面loading效果' },
   {
     name: '菜单宽度',
     key: 'menuWidth',
