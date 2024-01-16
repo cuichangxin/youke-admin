@@ -38,6 +38,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/user',
+    hidden: false,
+    component: Layout,
+    children: [
+      {
+        path: '/user/mycenter',
+        component: () => import('@/page/person-center/index.vue'),
+        name: 'MyCenter',
+        meta: { title: '个人中心', icon: 'people', },
+      }
+    ]
+  },
+  {
     path:'/redirect',
     component:Layout,
     hidden: true,

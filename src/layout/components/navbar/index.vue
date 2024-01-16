@@ -13,6 +13,15 @@
     </div>
     <ul class="right-side">
       <li>
+        <a-tooltip content="搜索">
+          <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleSearch">
+            <template #icon>
+              <icon-search />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </li>
+      <li>
         <a-tooltip :content="theme === 'light' ? '点击切换为暗黑模式' : '点击切换为亮色模式'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleToggleTheme">
             <template #icon>
@@ -64,6 +73,9 @@
       </li>
     </ul>
   </div>
+  <div class="search_box">
+    <Search ref="searchRef" />
+  </div>
 </template>
 
 <script setup>
@@ -71,6 +83,7 @@ import { useFullscreen, useToggle, useDark } from '@vueuse/core'
 import { useUserStore, useAppStore } from '@/store'
 import { cloneDeep } from 'lodash'
 import TopNav from '@/components/common/top-nav/menu-main.vue'
+import Search from '@/components/common/menuSearch/index.vue'
 
 const { isFullscreen, toggle: toggleFullScreen } = useFullscreen()
 const { logout } = useUserStore()
@@ -78,13 +91,14 @@ const appStore = useAppStore()
 const theme = computed(() => {
   return appStore.theme
 })
-const topNav = computed(()=>{
+const topNav = computed(() => {
   if (appStore.layoutMode == 4 || appStore.layoutMode == 3) {
     return false
-  }else {
+  } else {
     return true
   }
 })
+const searchRef = ref(null)
 
 const isDark = useDark({
   selector: 'body',
@@ -114,6 +128,9 @@ const handleToggleTheme = () => {
     copy.globalSettings = false
     localStorage.setItem('arco-setting', JSON.stringify(copy))
   })
+}
+const handleSearch = () => {
+  searchRef.value.showModal()
 }
 const setVisible = () => {
   appStore.updateSettings({ globalSettings: true })
@@ -171,6 +188,12 @@ const setVisible = () => {
   }
   .trigger-btn {
     margin-left: 14px;
+  }
+}
+.search_box {
+  :deep(.arco-modal-body) {
+    padding: 0;
+    border-radius: 8px;
   }
 }
 </style>
