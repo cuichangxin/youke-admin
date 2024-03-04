@@ -1,53 +1,47 @@
 <template>
-  <div>
-    <a-row style="margin-bottom: 16px">
-      <a-col :span="24">
-        <a-card :bordered="false">
-          <a-space :size="54">
-            <a-upload
-              :custom-request="customRequest"
-              list-type="picture-card"
-              :file-list="fileList"
-              :show-upload-button="true"
-              :show-file-list="false"
-              @change="uploadChange"
-            >
-              <template #upload-button>
-                <a-avatar :size="90" class="info-avatar">
-                  <template #trigger-icon>
-                    <icon-camera />
-                  </template>
-                  <img v-if="fileList.length" :src="fileList[0].url" />
-                </a-avatar>
-              </template>
-            </a-upload>
-            <a-descriptions
-              :data="renderData"
-              :column="2"
-              align="right"
-              layout="inline-horizontal"
-              :label-style="{
-                width: '140px',
-                fontWeight: 'normal',
-                color: 'rgb(var(--gray-8))',
-              }"
-              :value-style="{
-                width: '200px',
-                paddingLeft: '8px',
-                textAlign: 'left',
-              }"
-            >
-              <template #label="{ label }">{{ label }} :</template>
-            </a-descriptions>
-          </a-space>
-        </a-card>
-      </a-col>
-    </a-row>
+  <div class="user-center">
+    <div class="my-card">
+      <a-upload :custom-request="customRequest" list-type="picture-card" :file-list="fileList" :show-upload-button="true"
+        :show-file-list="false" @change="uploadChange">
+        <template #upload-button>
+          <a-avatar :size="90" class="info-avatar">
+            <template #trigger-icon>
+              <Icon :icon="'camera'" />
+            </template>
+            <img v-if="fileList.length" :src="fileList[0].url" />
+          </a-avatar>
+        </template>
+      </a-upload>
+      <a-descriptions class="descriptions" :column="1"
+        :label-style="{ color: 'rgb(var(--gray-8))', }">
+        <a-descriptions-item label="用户昵称">
+          {{ renderData.user.nickName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="用户名称">
+          {{ renderData.user.userName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="手机号码">
+          {{ renderData.user.phonenumber }}
+        </a-descriptions-item>
+        <a-descriptions-item label="用户邮箱">
+          {{ renderData.user.email }}
+        </a-descriptions-item>
+        <a-descriptions-item label="所属部门" v-if="renderData.user.dept">
+          {{ renderData.user.dept.deptName }} / {{ renderData.postGroup }}
+        </a-descriptions-item>
+        <a-descriptions-item label="所属角色">
+          {{ renderData.roleGroup }}
+        </a-descriptions-item>
+        <a-descriptions-item label="注册时间">
+          {{ renderData.user.createTime }}
+        </a-descriptions-item>
+      </a-descriptions>
+    </div>
     <a-row class="wrapper">
-      <a-col :span="24">
-        <a-tabs default-active-key="1" type="rounded">
+      <a-col>
+        <a-tabs default-active-key="1">
           <a-tab-pane key="1" title="基础信息">
-            <BasicInformation />
+            <BasicInformation :user="renderData.user" />
           </a-tab-pane>
           <a-tab-pane key="2" title="修改密码">
             <Password />
@@ -61,6 +55,7 @@
 import { useUserStore } from '@/store'
 import BasicInformation from './information.vue'
 import Password from './password.vue'
+import { getUserProfile } from '@/api/mock'
 
 const { proxy } = getCurrentInstance()
 const userStore = useUserStore()
@@ -70,40 +65,11 @@ const file = {
   name: 'avatar.png',
   url: userStore.avatar,
 }
-const renderData = [
-  {
-    label: '姓名',
-    value: userStore.name,
-  },
-  {
-    label: '用户名',
-    value: userStore.userName,
-  },
-  {
-    label: '账号ID',
-    value: userStore.accountId,
-  },
-  {
-    label: '手机号',
-    value: userStore.phone,
-  },
-  {
-    label: '邮箱',
-    value: userStore.email,
-  },
-  {
-    label: '角色',
-    value: userStore.roleGroup,
-  },
-  {
-    label: '注册时间',
-    value: userStore.registrationDate,
-  },
-  {
-    label: '单位',
-    value: userStore.dept,
-  },
-]
+const renderData = reactive({
+  user: {},
+  roleGroup: undefined,
+  postGroup: {},
+})
 const fileList = ref([file])
 const uploadChange = (fileItemList, fileItem) => {
   fileList.value = [fileItem]
@@ -112,62 +78,97 @@ const customRequest = (options) => {
   // docs: https://axios-http.com/docs/cancellation
   const controller = new AbortController()
 
-  ;(async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name, fileItem.file)
-    const onUploadProgress = (event) => {
-      let percent
-      if (event.total > 0) {
-        percent = (event.loaded / event.total) * 100
+    ; (async function requestWrap() {
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name, fileItem.file)
+      const onUploadProgress = (event) => {
+        let percent
+        if (event.total > 0) {
+          percent = (event.loaded / event.total) * 100
+        }
+        onProgress(parseInt(String(percent), 10), event)
       }
-      onProgress(parseInt(String(percent), 10), event)
-    }
 
-    try {
-      // https://github.com/axios/axios/issues/1630
-      // https://github.com/nuysoft/Mock/issues/127
+      try {
+        // https://github.com/axios/axios/issues/1630
+        // https://github.com/nuysoft/Mock/issues/127
 
-      const res = await proxy.$http.userUploadApi(formData, {
-        controller,
-        onUploadProgress,
-      })
-      onSuccess(res)
-    } catch (error) {
-      onError(error)
-    }
-  })()
+        const res = await proxy.$http.userUploadApi(formData, {
+          controller,
+          onUploadProgress,
+        })
+        onSuccess(res)
+      } catch (error) {
+        onError(error)
+      }
+    })()
   return {
     abort() {
       controller.abort()
     },
   }
 }
+
+function getUser() {
+  getUserProfile().then((response) => {
+    renderData.user = response.data
+    renderData.roleGroup = response.roleGroup
+    renderData.postGroup = response.postGroup
+  })
+}
+getUser()
 </script>
 <style lang="less" scoped>
+.user-center {
+  display: flex;
+}
+
 .user-detail {
   width: 100%;
   background-color: var(--color-bg-2);
 }
-.arco-card {
+
+.my-card {
+  background-color: var(--color-bg-2);
   padding: 10px;
   border-radius: 4px;
+  min-width: 300px;
+  margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
+
 :deep(.arco-avatar-trigger-icon-button) {
   width: 32px;
   height: 32px;
   line-height: 32px;
   background-color: #e8f3ff;
-  .arco-icon-camera {
+
+  .i-icon {
     margin-top: 8px;
     color: rgb(var(--arcoblue-6));
     font-size: 14px;
   }
 }
+
 .wrapper {
   padding: 20px 0 0 20px;
   background-color: var(--color-bg-2);
   border-radius: 4px;
+  width: 65%;
+}
+
+.descriptions {
+  margin-top: 30px;
+  padding-left: 30px;
+}
+
+.arco-upload {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 0 0;
 }
 </style>

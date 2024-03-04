@@ -16,7 +16,7 @@
         <a-tooltip content="搜索">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleSearch">
             <template #icon>
-              <icon-search />
+              <Icon  :icon="'search'" />
             </template>
           </a-button>
         </a-tooltip>
@@ -25,8 +25,8 @@
         <a-tooltip :content="theme === 'light' ? '点击切换为暗黑模式' : '点击切换为亮色模式'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleToggleTheme">
             <template #icon>
-              <icon-moon-fill v-if="theme === 'dark'" />
-              <icon-sun-fill v-else />
+              <Icon v-if="theme === 'dark'"  :icon="'moon'" />
+              <Icon v-else :icon="'sun'" />
             </template>
           </a-button>
         </a-tooltip>
@@ -35,8 +35,8 @@
         <a-tooltip :content="isFullscreen ? '点击退出全屏模式' : '点击切换全屏模式'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="toggleFullScreen">
             <template #icon>
-              <icon-fullscreen-exit v-if="isFullscreen" />
-              <icon-fullscreen v-else />
+              <Icon v-if="isFullscreen"  :icon="'off-screen'" />
+              <Icon v-else :icon="'full-screen'" />
             </template>
           </a-button>
         </a-tooltip>
@@ -45,7 +45,7 @@
         <a-tooltip :content="'页面配置'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="setVisible">
             <template #icon>
-              <icon-settings />
+              <Icon :icon="'config'" />
             </template>
           </a-button>
         </a-tooltip>
@@ -53,18 +53,18 @@
       <li>
         <a-dropdown trigger="click">
           <a-avatar :size="32" :style="{ marginRight: '8px', cursor: 'pointer' }">
-            <img alt="avatar" />
+            <img alt="avatar" :src="avatar" />
           </a-avatar>
           <template #content>
             <a-doption>
               <a-space @click="$router.push({ name: 'MyCenter' })">
-                <icon-settings />
-                <span> 用户设置 </span>
+                <Icon :icon="'user'" />
+                <span> 个人中心 </span>
               </a-space>
             </a-doption>
             <a-doption>
               <a-space @click="handleLogout">
-                <icon-export />
+                <Icon :icon="'logout'" />
                 <span> 退出登录 </span>
               </a-space>
             </a-doption>
@@ -86,7 +86,7 @@ import TopNav from '@/components/common/top-nav/menu-main.vue'
 import Search from '@/components/common/menuSearch/index.vue'
 
 const { isFullscreen, toggle: toggleFullScreen } = useFullscreen()
-const { logout } = useUserStore()
+const { logout, avatar } = useUserStore()
 const appStore = useAppStore()
 const theme = computed(() => {
   return appStore.theme
@@ -151,6 +151,7 @@ const setVisible = () => {
   align-items: center;
   padding-left: 20px;
 }
+
 .logo_img {
   width: 25px;
   height: 25px;
@@ -159,13 +160,16 @@ const setVisible = () => {
 .center-side {
   flex: 1;
 }
+
 .right-side {
   display: flex;
   padding-right: 20px;
   list-style: none;
+
   :deep(.locale-select) {
     border-radius: 20px;
   }
+
   li {
     display: flex;
     align-items: center;
@@ -176,20 +180,24 @@ const setVisible = () => {
     color: var(--color-text-1);
     text-decoration: none;
   }
+
   .nav-btn {
     border-color: rgb(var(--gray-2));
     color: rgb(var(--gray-8));
     font-size: 16px;
   }
+
   .trigger-btn,
   .ref-btn {
     position: absolute;
     bottom: 14px;
   }
+
   .trigger-btn {
     margin-left: 14px;
   }
 }
+
 .search_box {
   :deep(.arco-modal-body) {
     padding: 0;
@@ -203,5 +211,4 @@ const setVisible = () => {
   .arco-popover-content {
     margin-top: 0;
   }
-}
-</style>
+}</style>

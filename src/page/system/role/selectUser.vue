@@ -62,6 +62,9 @@
 </template>
 
 <script setup name="SelectUser">
+import { Message } from '@arco-design/web-vue';
+import { getRequest } from '@/api/mock_request'
+
 const props = defineProps({
   roleId: {
     type: [Number, String],
@@ -69,22 +72,11 @@ const props = defineProps({
 })
 
 const { proxy } = getCurrentInstance()
-const { $modal, $message } = getCurrentInstance().appContext.config.globalProperties
 const queryRef = ref(null)
-const userList = ref([
-  {
-    userId: '1',
-    userName: 'zs',
-    nickName: '嘿嘿',
-    phoneNumber: '15888888888',
-    status: '0',
-    createTime: '1997-01-01 00:00:00',
-  },
-])
+const userList = ref([])
 const visible = ref(false)
 const total = ref(0)
 const userIds = ref([])
-
 const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
@@ -110,7 +102,7 @@ function handleSelectionChange(selection) {
 }
 // 查询表数据
 function getList() {
-  proxy.$http.unallocatedUserList(queryParams).then((res) => {
+  getRequest('/system/role/authUser/unallocatedList',queryParams).then((res) => {
     userList.value = res.rows
     total.value = res.total
   })
@@ -131,16 +123,16 @@ function handleSelectUser() {
   const roleId = queryParams.roleId
   const uIds = userIds.value.join(',')
   if (uIds == '') {
-    $message.error('请选择要分配的用户')
+    Message.error('请选择要分配的用户')
     return
   }
-  proxy.$http.authUserSelectAll({ roleId: roleId, userIds: uIds }).then((res) => {
-    $message.success(res.msg)
-    if (res.code === 200) {
+  // proxy.$http.authUserSelectAll({ roleId: roleId, userIds: uIds }).then((res) => {
+  //   Message.success(res.msg)
+  //   if (res.code === 200) {
       visible.value = false
       emit('ok')
-    }
-  })
+  //   }
+  // })
 }
 
 defineExpose({

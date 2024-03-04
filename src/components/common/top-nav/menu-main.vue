@@ -1,23 +1,30 @@
 <template>
-  <a-menu mode="horizontal" :selected-keys="[selectKeys]" @menu-item-click="clickMenu">
-    <!-- <topMenuItem v-for="route in routeList" :key="route.path" :item="route" :base-path="route.path" /> -->
+  <a-menu mode="horizontal" :selected-keys="[navSelectKeys]" @menu-item-click="clickMenu">
     <template v-for="(route, index) in routeList">
       <template v-if="!route.hidden">
-        <template v-if="hasOneShowingChild(route.children, route) && !route.alwaysShow">
-          <a-menu-item :key="showRouteInfo(route).path">
+
+        <template v-if="route.path == '/'">
+          <a-menu-item :key="route.children[0].path">
             <template #icon>
-              <Icons :icon="showRouteInfo(route).meta.icon" size="19" />
+              <Icon :icon="route.children[0].meta.icon" size="19" />
             </template>
-            <span>{{showRouteInfo(route).meta.title}}</span>
+            <span>{{ route.children[0].meta.title }}</span>
           </a-menu-item>
         </template>
-        <template v-else>
-          <a-sub-menu :key="route.path">
+        
+        <template v-else-if="!route.hasOwnProperty('children')">
+          <a-menu-item :key="route.path">
             <template #icon>
-              <Icons :icon="route.meta.icon" size="19" />
+              <Icon :icon="route.meta.icon" size="19" />
             </template>
-            <template #title>
-              <span>{{ route.meta.title }}</span>
+            <span>{{ route.meta.title }}</span>
+          </a-menu-item>
+        </template>
+
+        <template v-else>
+          <a-sub-menu :key="route.path" :title="route.meta.title">
+            <template #icon>
+              <Icon :icon="route.meta.icon" size="19" />
             </template>
             <menu-sub v-for="child in route.children" :key="child.path" :menu-item="child" />
           </a-sub-menu>
@@ -28,13 +35,12 @@
 </template>
 <script setup>
 import menuSub from './menu-sub.vue'
-import Icons from '@/components/common/icon'
 import { listenerRouteChange } from '@/utils/route-listener'
 import { useTabStore, usePermissionStore, useAppStore } from '@/store'
 import { isHttp } from '@/utils/utils'
 import { useMenuLayout } from '@/hooks/menuLayout'
 
-const { selectKeys, layoutMode } = useMenuLayout()
+const { navSelectKeys, layoutMode } = useMenuLayout()
 const router = useRouter()
 const route = useRoute()
 const tabStore = useTabStore()
@@ -44,40 +50,19 @@ const routeList = computed(() => permissionStore.topbarRouters)
 const routes = computed(() => permissionStore.routes)
 
 listenerRouteChange((e) => {
-  findMenuItem(routeList.value, e.path)
+  const cutPath = e.path.split('/'),
+    path = cutPath[cutPath.length - 1]
+  findMenuItem(routeList.value, path)
+
+  changeSelectKey(cutPath,path)
 })
 
-const onlyOneChild = ref(null)
-
-const hasOneShowingChild = (children = [], parent) => {
-  const showingChildren = children.filter((item) => {
-    if (item.path === '/index') {
-      onlyOneChild.value = item
-    }
-    if (item.hidden) {
-      return false
-    } else {
-      return true
-    }
-  })
-  // 当只有一个子路由器时，默认显示该子路由器
-  if (showingChildren.length === 1) {
-    return true
-  }
-  // 如果没有要显示的子路由器，则显示父路由器
-  if (showingChildren.length === 0) {
-    onlyOneChild.value = { ...parent, path: '', noShowingChildren: true }
-    return true
-  }
-  return false
-}
-
 const clickMenu = (key) => {
-  selectKeys.value = key
+  navSelectKeys.value = key
   if (appStore.layoutMode == 1) {
     let nowMenu
 
-    if (key === '/index') {
+    if (key === '/dashboard') {
       nowMenu = routes.value.find((item) => item.path === '/').children[0]
     } else {
       nowMenu = routes.value.find((item) => item.path === key)
@@ -130,47 +115,37 @@ function updateSideBarMenu(key) {
   }
 }
 
-const showRouteInfo = (item) => {
-  if (item.path === '/') {
-    return item.children[0]
-  } else if (!item.alwaysShow && item.children && item.children.length === 1) {
-    return item.children[0]
-  } else {
-    return item
+function changeSelectKey(cutPath,path) {
+  if (layoutMode.value === '1') {
+    navSelectKeys.value = '/' + cutPath[1]
+  }
+  if (layoutMode.value === '2') {
+    navSelectKeys.value = cutPath.includes('index') ? `/${path}` : path
   }
 }
 
-watch(
-  () => router.currentRoute.value,
-  (n) => {
-    // selectKeys.value = n.path
-  },
-  { immediate: true }
-)
-onMounted(() => {
-  const routeTag = permissionStore.topbarRouters.some((v) => v.path === route.matched[0].path)
-  if (layoutMode.value === '1') {
-    if (routeTag) {
-      selectKeys.value = route.matched[0].path
-    } else {
-      selectKeys.value = route.fullPath
-    }
-  }
+watch(()=>layoutMode.value,(n)=>{
+  const cutPath = route.path.split('/'),
+    path = cutPath[cutPath.length - 1]
+    changeSelectKey(cutPath,path)
 })
 </script>
 <style lang="less" scoped>
 .arco-menu-horizontal {
   :deep(.arco-menu-item) {
     display: inline-flex;
+
     .i-icon {
       display: flex;
       align-items: center;
       flex-direction: row;
     }
   }
+
   :deep(.arco-menu-pop) {
     display: inline-flex;
     align-items: center;
+
     .i-icon {
       display: flex;
       align-items: center;
@@ -178,9 +153,9 @@ onMounted(() => {
     }
   }
 }
+
 :deep(.arco-menu-icon) {
   display: flex;
   align-items: center;
   margin-right: 12px;
-}
-</style>
+}</style>

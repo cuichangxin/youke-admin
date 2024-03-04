@@ -5,7 +5,7 @@
         <div class="tab-bar-scroll">
           <a-scrollbar style="overflow: auto">
             <div class="tags-wrap">
-              <tab-item v-for="(tag, index) in tagList" :key="index" :index="index" :item-data="tag" />
+              <tab-item v-for="(tag, index) in tagList" :key="index" :index="index" :item-data="tag" :route-path="routePath" :parentRoutePath="parentRoutePath" />
             </div>
           </a-scrollbar>
         </div>
@@ -18,6 +18,7 @@
 import { useAppStore, useTabStore } from '@/store'
 import tabItem from './tab-item.vue'
 
+const router = useRouter()
 const appStore = useAppStore()
 const TabStore = useTabStore()
 
@@ -28,6 +29,20 @@ const tagList = computed(() => {
 const offsetTop = computed(() => {
   return appStore.navbar ? 60 : 0
 })
+const routePath = ref('')
+const parentRoutePath = ref('')
+
+watch(
+  () => router.currentRoute.value,
+  (n) => {
+    const cutPath = n.path.split('/'),
+      path = cutPath[cutPath.length - 1],
+      parentPath = cutPath[cutPath.length -2];
+      parentRoutePath.value = parentPath
+    routePath.value = path
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped lang="less">
@@ -36,7 +51,7 @@ const offsetTop = computed(() => {
   background-color: var(--color-bg-2);
   .tab-bar-box {
     display: flex;
-    padding: 0 0 0 20px;
+    padding: 0 20px;
     background-color: var(--color-bg-2);
     border-bottom: 1px solid var(--color-border);
     .tab-bar-scroll {
@@ -67,9 +82,9 @@ const offsetTop = computed(() => {
   height: 48px;
   position: static;
 }
-:deep(.arco-scrollbar-track-direction-horizontal){
+:deep(.arco-scrollbar-track-direction-horizontal) {
   bottom: -12px;
-  .arco-scrollbar-thumb-bar{
+  .arco-scrollbar-thumb-bar {
     height: 6px;
   }
 }

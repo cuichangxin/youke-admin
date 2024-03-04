@@ -1,25 +1,12 @@
 import { defineStore } from 'pinia';
-import api from '@/api/api'
-import { setToken, clearToken } from '@/utils/auth'
+import { postRequest, getRequest } from '@/api/mock_request'
+import { getToken, setToken, clearToken } from '@/utils/auth'
 
 const useUserStore = defineStore('user', {
   state: () => ({
-    name: undefined,
-    avatar: undefined,
-    job: undefined,
-    organization: undefined,
-    location: undefined,
-    email: undefined,
-    introduction: undefined,
-    personalWebsite: undefined,
-    jobName: undefined,
-    organizationName: undefined,
-    locationName: undefined,
-    phone: undefined,
-    registrationDate: undefined,
-    accountId: undefined,
-    certification: undefined,
-    dept: '',
+    token: getToken(),
+    name: '',
+    avatar: '',
     role: [],
     permissions: [],
   }),
@@ -37,18 +24,27 @@ const useUserStore = defineStore('user', {
     resetInfo() {
       this.$reset();
     },
-    // TODO: 暂时注释掉
     async info() {
-      // return new Promise((resolve, reject) => {
-      //   const res = api.getUserInfo()
-      //   this.setInfo(res.data)
-      //   resolve(res)
-      // })
+      return new Promise((resolve, reject) => {
+        getRequest('/getInfo').then((res) => {
+          const { user } = res
+          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+            this.role = res.roles
+            this.permissions = res.permissions
+          } else {
+            this.role = ['ROLE_DEFAULT']
+          }
+          this.avatar = user.avatar
+          this.name = user.name
+          resolve(res)
+        }).catch((err) => {
+          reject(err)
+        })
+      })
     },
-    // 不一定是这样，可能需要按照项目情况改
     async login(loginForm) {
       try {
-        const res = await api.userLogin(loginForm)
+        const res = await postRequest('/login', loginForm)
         setToken(res.data.token);
       } catch (error) {
         clearToken()
@@ -57,7 +53,7 @@ const useUserStore = defineStore('user', {
     },
     async logout() {
       return new Promise((resolve, reject) => {
-        api.userLogout().then(() => {
+        postRequest('/logout').then(() => {
           this.logoutCallBack()
           resolve()
         }).catch((error) => {

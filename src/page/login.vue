@@ -27,7 +27,7 @@
             >
               <a-input v-model="userInfo.username" :placeholder="'请输入用户名'">
                 <template #prefix>
-                  <icon-user />
+                  <Icon :icon="'people'" />
                 </template>
               </a-input>
             </a-form-item>
@@ -39,7 +39,7 @@
             >
               <a-input-password v-model="userInfo.password" :placeholder="'请输入密码'" allow-clear>
                 <template #prefix>
-                  <icon-lock />
+                  <Icon :icon="'lock'" />
                 </template>
               </a-input-password>
             </a-form-item>
@@ -52,7 +52,7 @@
                 >
                   记住密码
                 </a-checkbox>
-                <a-link>忘记密码</a-link>
+                <!-- <a-link>忘记密码</a-link> -->
               </div>
               <a-form-item>
                 <a-button type="primary" html-type="submit" long :loading="loading"> 登录 </a-button>
@@ -88,14 +88,14 @@ const handleSubmit = async ({ values, errors }) => {
     try {
       await userStore.login(values)
       const { redirect, ...othersQuery } = router.currentRoute.value.query
-      router.push({
-        name: redirect || 'Index',
+      router.replace({
+        path: redirect || 'Index',
         query: {
           ...othersQuery,
         },
       })
       Message.success('登录成功')
-      const { rememberPassword } = userInfo
+      const { rememberPassword } = userInfo.value
       const { username, password } = values
       if (rememberPassword) {
         Cookies.set('username', username, { expires: 30 })
@@ -228,7 +228,7 @@ body[arco-theme='dark'] .login-bg{
   transition: all 0.2s ease;
   cursor: pointer;
   img {
-    width: 48px;
+    width: 45px;
   }
   .logo-title {
     font-size: 24px;

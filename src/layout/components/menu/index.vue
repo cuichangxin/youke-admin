@@ -3,47 +3,19 @@
     :style="{ width: '100%', height: '100%' }"
     show-collapse-button
     v-model:open-keys="openKeys"
-    v-model:selected-keys="selectedKeys"
+    :selected-keys="[selectKeys]"
     @collapse="onCollapse"
+    @menu-item-click="onMenuItemClick"
   >
-    <!-- <Menu v-for="route in routeList" :key="route.path" :item="route" :base-path="route.path" /> -->
-    <template v-for="(route, index) in routeList">
-      <template v-if="!route.hidden">
-        <template v-if="hasOneShowingChild(route.children, route) && !route.alwaysShow">
-          <appLink :to="showRouteInfo(route).path" :target="isHttp(showRouteInfo(route).path)">
-            <a-menu-item :key="showRouteInfo(route).path">
-              <template #icon>
-                <Icons
-                  :icon="showRouteInfo(route).meta.icon"
-                  size="19"
-                />
-              </template>
-              <span>{{ showRouteInfo(route).meta.title }}</span>
-            </a-menu-item>
-          </appLink>
-        </template>
-        <template v-else>
-          <a-sub-menu :key="route.path">
-            <template #icon>
-              <Icons :icon="route.meta.icon" size="19" />
-            </template>
-            <template #title>
-              <span>{{ route.meta.title }}</span>
-            </template>
-            <SideBarItem v-for="child in route.children" :key="child.path" :menu-item="child" />
-          </a-sub-menu>
-        </template>
-      </template>
-    </template>
+    <menu-item v-for="(route, index) in routeList" :key="route.path" :item="route.path === '/' ? route.children[0] : route" />
   </a-menu>
 </template>
 <script setup>
-import SideBarItem from './SideBarItem.vue'
-import appLink from '@/components/common/appLink'
-import Icons from '@/components/common/icon'
+import MenuItem from './menu-item.vue'
 import { useAppStore, useTabStore, usePermissionStore } from '@/store'
 import { listenerRouteChange } from '@/utils/route-listener'
 import { isHttp } from '@/utils/utils'
+import useMenuLayout from '@/hooks/menuLayout'
 
 const permissionStore = usePermissionStore()
 const appStore = useAppStore()
@@ -53,11 +25,13 @@ const route = useRoute()
 
 const routeList = computed(() => permissionStore.sidebarRouters)
 const openKeys = ref([])
-const selectedKeys = ref([])
-const onlyOneChild = ref(null)
+const { selectKeys } = useMenuLayout()
 
 listenerRouteChange((e) => {
-  findMenuItem(routeList.value, e.path)
+  let pathSplit = e.path.split('/'),
+    path = pathSplit[pathSplit.length - 1]
+  findMenuItem(routeList.value, path)
+  selectKeys.value = pathSplit.includes('index') ? `/${path}` : path
 })
 
 const onCollapse = (collapsed) => {
@@ -73,81 +47,34 @@ function findMenuItem(data, path) {
     }
   })
 }
-
-function findRouteChange(data, path) {
-  data.forEach((item) => {
-    if (item.path === path) {
-      if (!selectedKeys.value.includes(item.path)) {
-        selectedKeys.value.push(item.path)
-      }
-      if (item.path.split('/').length - 1 >= 2) {
-        let list = findOpenKey(routeList.value, item, openKeys.value)
-        openKeys.value = openKeys.value.concat(list)
-      }
-    } else if (item?.children) {
-      findRouteChange(item.children, path)
-    }
-  })
-}
-
-function findOpenKey(data, target, result) {
-  for (let i in data) {
-    if (data[i].path === target.path) {
-      return [data[i].path]
-    }
-
-    if (data[i].children) {
-      let isFind = findOpenKey(data[i].children, target, result)
-      if (isFind !== undefined) {
-        return isFind.concat(data[i].path)
-      }
-    }
-  }
-}
-
-const hasOneShowingChild = (children = [], parent) => {
-  const showingChildren = children.filter((item) => {
-    if (item.path === '/index') {
-      onlyOneChild.value = item
-    }
-    if (item.hidden) {
-      return false
-    } else {
-      return true
-    }
-  })
-  // 当只有一个子路由器时，默认显示该子路由器
-  if (showingChildren.length === 1) {
-    return true
-  }
-  // 如果没有要显示的子路由器，则显示父路由器
-  if (showingChildren.length === 0) {
-    onlyOneChild.value = { ...parent, path: '', noShowingChildren: true }
-    return true
-  }
-  return false
-}
-
-const showRouteInfo = (item) => {
-  if (item.path === '/') {
-    return item.children[0]
-  } else if (!item.alwaysShow && item.children && item.children.length === 1) {
-    return item.children[0]
+const onMenuItemClick = (key) => {
+  let name = key === '/index' ? 'Index' : key.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+  if (isHttp(key)) {
+    window.open(key)
   } else {
-    return item
+    router.push({ name: name })
   }
 }
 
 watch(
   () => router.currentRoute.value,
   (n) => {
-    selectedKeys.value = []
-    findRouteChange(routeList.value, n.path)
+    let pathSplit = n.path.split('/')
+    pathSplit.forEach((item, index) => {
+      if (index < pathSplit.length - 1 && item !== '') {
+        if (index === 1) {
+          item = '/' + item
+        }
+        openKeys.value.push(item)
+      }
+    })
   },
   { immediate: true }
 )
 onMounted(async () => {
-  await routerTag.initTabBar(routeList.value, route.path)
+  let pathSplit = route.path.split('/'),
+    path = pathSplit[pathSplit.length - 1]
+  await routerTag.initTabBar(routeList.value, path)
 })
 </script>
 <style lang="less" scoped></style>

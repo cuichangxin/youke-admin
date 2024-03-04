@@ -11,12 +11,12 @@
           </a-form-item>
           <a-form-item field="status" label="状态">
             <a-select :style="{ width: '180px' }" v-model="queryParams.status" allow-clear>
-              <a-option :value="'0'">正常</a-option>
-              <a-option :value="'1'">停用</a-option>
+              <a-option value="0" label="正常" />
+              <a-option value="1" label="停用" />
             </a-select>
           </a-form-item>
           <a-form-item label="创建时间">
-            <a-range-picker v-model="dateRange" show-time :time-picker-props="{}" format="YYYY-MM-DD HH:mm:ss" />
+            <a-range-picker style="width: 254px" v-model="dateRange" :time-picker-props="{}" format="YYYY-MM-DD" />
           </a-form-item>
           <a-form-item>
             <a-space>
@@ -27,133 +27,79 @@
         </a-form>
       </a-space>
     </div>
+
     <div class="user_content">
       <div class="user_content_header">
-        <div class="user_content_setting">
-          <a-space>
-            <a-button type="primary" @click="handleAdd" v-hasPermi="['system:user:add']">
+        <a-space>
+          <a-button type="primary" @click="handleAdd" v-hasPermi="['system:user:add']">
+            <template #icon>
+              <Icon :icon="'plus'" />
+            </template>
+            <template #default>新增</template>
+          </a-button>
+          <a-button type="primary" status="success" :disabled="single" @click="handleUpdate"
+            v-hasPermi="['system:user:edit']">
+            <template #icon>
+              <Icon :icon="'editor'" />
+            </template>
+            <template #default>修改</template>
+          </a-button>
+          <a-button type="primary" status="danger" :disabled="removeFlag" @click="handleDelete"
+            v-hasPermi="['system:user:remove']">
+            <template #icon>
+              <Icon :icon="'delete'" />
+            </template>
+            <template #default>删除</template>
+          </a-button>
+        </a-space>
+        <a-space>
+          <a-tooltip content="刷新">
+            <a-button shape="circle" @click="getList">
               <template #icon>
-                <icon-plus />
+                <Icon :icon="'refresh'" />
               </template>
-              <template #default>新增</template>
             </a-button>
-            <a-button
-              type="primary"
-              status="success"
-              :disabled="single"
-              @click="handleUpdate"
-              v-hasPermi="['system:user:edit']"
-            >
-              <template #icon>
-                <icon-edit />
-              </template>
-              <template #default>修改</template>
-            </a-button>
-            <a-button
-              type="primary"
-              status="danger"
-              :disabled="removeFlag"
-              @click="handleDelete"
-              v-hasPermi="['system:user:remove']"
-            >
-              <template #icon>
-                <icon-delete />
-              </template>
-              <template #default>删除</template>
-            </a-button>
-            <a-tooltip content="刷新">
-              <a-button shape="circle" @click="getList">
-                <template #icon>
-                  <icon-refresh size="17" />
-                </template>
-              </a-button>
-            </a-tooltip>
-          </a-space>
-        </div>
+          </a-tooltip>
+        </a-space>
       </div>
-      <a-table
-        class="user_table"
-        :bordered="false"
-        row-key="userId"
-        :loading="loading"
-        :row-selection="rowSelection"
-        :data="userList"
-        @select="userSelect"
-      >
+
+      <a-table class="user_table" :bordered="false" row-key="userId" :loading="loading" :row-selection="rowSelection"
+        :data="userList" @select="userSelect">
         <template #columns>
-          <a-table-column
-            title="用户编号"
-            :width="120"
-            data-index="userId"
-            align="center"
-            :sortable="{ sortDirections: ['ascend', 'descend'] }"
-          ></a-table-column>
-          <a-table-column
-            title="用户名称"
-            data-index="userName"
-            align="center"
-            :sortable="{ sortDirections: ['ascend', 'descend'] }"
-          />
+          <a-table-column title="用户编号" :width="120" data-index="userId" align="center"
+            :sortable="{ sortDirections: ['ascend', 'descend'] }"></a-table-column>
+          <a-table-column title="用户名称" data-index="userName" align="center"
+            :sortable="{ sortDirections: ['ascend', 'descend'] }" />
           <a-table-column title="用户昵称" data-index="nickName" align="center" />
-          <a-table-column title="单位" data-index="dept" align="center" />
+          <a-table-column title="部门" data-index="dept.deptName" align="center" />
           <a-table-column title="手机号码" data-index="phonenumber" align="center" />
           <a-table-column title="状态" data-index="status" align="center">
             <template #cell="{ record }">
               <a-tooltip :content="record.status === '0' ? '正常' : '停用'">
-                <a-switch
-                  v-model="record.status"
-                  size="small"
-                  checked-value="0"
-                  unchecked-value="1"
-                  @change="handleStatusChange(record)"
-                />
+                <a-switch v-model="record.status" checked-value="0" unchecked-value="1" @change="handleStatusChange(record)"></a-switch>
               </a-tooltip>
             </template>
           </a-table-column>
           <a-table-column title="创建时间" data-index="createTime" align="center"></a-table-column>
-          <a-table-column title="操作" :width="240" align="center">
+          <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button
-                v-if="record.userId !== '1'"
-                type="text"
-                size="mini"
-                v-hasPermi="['system:user:edit']"
-                @click="handleUpdate(record)"
-                >修改</a-button
-              >
-              <a-button
-                v-if="record.userId !== '1'"
-                type="text"
-                status="danger"
-                size="mini"
-                @click="handleDelete(record)"
-                v-hasPermi="['system:user:remove']"
-                >删除</a-button
-              >
-              <a-button
-                v-if="record.userId !== '1'"
-                type="text"
-                size="mini"
-                v-hasPermi="['system:user:resetPwd']"
-                @click="handleResetPwd(record)"
-                >重置密码</a-button
-              >
-              <a-button
-                v-if="record.userId !== '1'"
-                type="text"
-                size="mini"
-                v-hasPermi="['system:user:edit']"
-                @click="handleAuthUser(record)"
-                >分配角色</a-button
-              >
+              <a-button v-if="record.userId != '1'" type="text" size="mini" v-hasPermi="['system:user:edit']"
+                @click="handleUpdate(record)">修改</a-button>
+              <a-button v-if="record.userId != '1'" type="text" status="danger" size="mini" @click="handleDelete(record)"
+                v-hasPermi="['system:user:remove']">删除</a-button>
+              <a-button v-if="record.userId != '1'" type="text" size="mini" v-hasPermi="['system:user:resetPwd']"
+                @click="handleResetPwd(record)">重置密码</a-button>
+              <a-button v-if="record.userId != '1'" type="text" size="mini" v-hasPermi="['system:user:edit']"
+                @click="handleAuthUser(record)">分配角色</a-button>
             </template>
           </a-table-column>
         </template>
       </a-table>
     </div>
+
     <!-- 重置密码弹窗 -->
     <a-modal v-model:visible="resetPwdVisible" title="提示">
-      <div style="margin-bottom: 8px">请输入 "{{ resetPwdName }}" 用户的新密码</div>
+      <div style="margin-bottom: 8px">请输入 "{{ resetPwdName.userName }}" 用户的新密码</div>
       <a-form :model="pwdForm" auto-label-width ref="pwdFormRef" :rules="rules">
         <a-form-item field="resetPassword" class="pwd-item">
           <a-input ref="resetPwdRef" v-model="pwdForm.resetPassword"></a-input>
@@ -166,6 +112,7 @@
         </a-space>
       </template>
     </a-modal>
+
     <!-- 新增/修改用户弹窗 -->
     <a-modal v-model:visible="open" :title="title" :width="700">
       <a-form :model="form" :rules="userRules" ref="userRef">
@@ -176,8 +123,19 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
+            <a-form-item label="归属部门" field="deptId" label-col-flex="100px">
+              <a-tree-select v-model="form.deptId" :data="deptOptions" :field-names="{ title: 'label', key: 'id' }"
+                placeholder="请选择归属部门" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
             <a-form-item label="手机号码" field="phonenumber" label-col-flex="100px">
               <a-input v-model="form.phonenumber" placeholder="请输入手机号码" :max-length="11" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="邮箱" field="email" label-col-flex="100px">
+              <a-input v-model="form.email" placeholder="请输入邮箱" :max-length="50" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -193,25 +151,31 @@
           <a-col :span="12">
             <a-form-item label="用户性别" field="sex" label-col-flex="100px">
               <a-select v-model="form.sex">
-                <a-option value="0">男</a-option>
-                <a-option value="1">女</a-option>
+                <a-option label="男" value="0"></a-option>
+                <a-option label="女" value="1"></a-option>
+                <a-option label="未知" value="2"></a-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item label="状态" field="status" label-col-flex="100px">
               <a-radio-group v-model="form.status">
-                <a-radio value="0">正常</a-radio>
-                <a-radio value="1">停用</a-radio>
+                <a-radio value="0" label="正常">正常</a-radio>
+                <a-radio value="1" label="停用">停用</a-radio>
               </a-radio-group>
             </a-form-item>
           </a-col>
           <a-col :span="12">
+            <a-form-item label="岗位" field="postIds" label-col-flex="100px">
+              <a-select v-model="form.postIds">
+                <a-option v-for="item in postOptions" :value="item.postId" :label="item.postName"></a-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
             <a-form-item label="角色" field="status" label-col-flex="100px">
-              <a-select v-model="form.status">
-                <a-option v-for="item in roleOptions" :key="item.roleId" :value="item.roleId">{{
-                  item.roleName
-                }}</a-option>
+              <a-select v-model="form.roleIds">
+                <a-option v-for="item in roleOptions" :value="item.roleId" :label="item.roleName"></a-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -233,10 +197,11 @@
 </template>
 <script setup>
 import { addDateRange } from '@/utils/utils'
+import { Message, Modal } from '@arco-design/web-vue';
+import { getRequest } from '@/api/mock_request'
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()
-const { $modal, $message } = getCurrentInstance().appContext.config.globalProperties
 const form = ref({})
 const queryParams = ref({
   userName: '',
@@ -244,7 +209,7 @@ const queryParams = ref({
   status: '',
   createTime: '',
 })
-const pwdForm = reactive({
+const pwdForm = ref({
   resetPassword: '',
 })
 const resetPwdName = ref('')
@@ -264,6 +229,8 @@ const open = ref(false)
 const title = ref('')
 const initPassword = ref(undefined)
 const single = ref(true)
+const deptOptions = ref(undefined)
+const postOptions = ref(undefined)
 
 const rules = {
   resetPassword: [
@@ -287,6 +254,13 @@ const userRules = {
   phonenumber: [{ match: /^(?:(?:\+|00)86)?1\d{10}$/, message: '请输入正确的手机号码' }],
 }
 
+/** 查询部门下拉树结构 */
+function getDeptTree() {
+  getRequest('/system/user/deptTree').then((response) => {
+    deptOptions.value = response.data
+  })
+}
+
 /** 重置操作表单 */
 function reset() {
   form.value = {
@@ -307,7 +281,7 @@ function reset() {
 }
 
 const search = () => {
-  getList()
+  // getList()
 }
 const resetSearch = () => {
   proxy.$refs['formRef'].resetFields()
@@ -325,7 +299,8 @@ const userSelect = (rowKeys) => {
 /** 新增按钮操作 */
 const handleAdd = () => {
   reset()
-  proxy.$http.getUser().then((response) => {
+  getRequest(`/system/user/detail`).then((response) => {
+    postOptions.value = response.posts
     roleOptions.value = response.roles
     open.value = true
     title.value = '添加用户'
@@ -336,8 +311,9 @@ const handleAdd = () => {
 const handleUpdate = (row) => {
   reset()
   const userId = row.userId || userSelectList.value
-  proxy.$http.getUser(userId).then((response) => {
+  getRequest(`/system/user/detail/${userId}`).then((response) => {
     form.value = response.data
+    postOptions.value = response.posts
     roleOptions.value = response.roles
     form.value.roleIds = response.roleIds
     open.value = true
@@ -348,23 +324,23 @@ const handleUpdate = (row) => {
 /** 删除按钮操作 */
 const handleDelete = (row) => {
   const userIds = row.userId || userSelectList.value
-  $modal.confirm({
+  Modal.confirm({
     title: '提示',
     content: '是否确认删除用户编号为"' + userIds + '"的数据项?',
     titleAlign: 'start',
     onOk: () => {
-      proxy.$http.delUser({ userIds: userIds }).then((res) => {
-        getList()
-        $message.success(`删除成功`)
-      })
+      // getRequest(`/system/user`,userIds).then((res) => {
+      //   getList()
+      //   Message.success(`删除成功`)
+      // })
     },
   })
 }
 /** 重置密码按钮操作 */
 const handleResetPwd = (row) => {
-  resetPwdName.value = row.userName
+  resetPwdName.value = row
   resetPwdVisible.value = true
-  pwdForm.resetPassword = ''
+  pwdForm.value.resetPassword = ''
   setTimeout(() => {
     proxy.$refs['resetPwdRef'].focus()
   })
@@ -375,13 +351,14 @@ const submitForm = () => {
     .validate()
     .then((res) => {
       if (!res) {
-        proxy.$http.resetUserPwd({ userId: row.userId, password: pwdForm.resetPassword }).then((res) => {
-          $message.success('修改成功,新密码是:' + pwdForm.resetPassword)
-          resetPwdVisible.value = false
-        })
+        // putRequest('/system/user/resetPwd',{ userId: resetPwdName.value.userId, password: pwdForm.value.resetPassword })
+        // .then((res) => {
+        //   Message.success('修改成功,新密码是:' + pwdForm.value.resetPassword)
+        //   resetPwdVisible.value = false
+        // })
       }
     })
-    .catch(() => {})
+    .catch(() => { })
 }
 
 // 新增/修改用户信息
@@ -391,17 +368,44 @@ const submitFormUpdate = () => {
     .then((res) => {
       if (!res) {
         if (form.value.userId !== undefined) {
-          proxy.$http.updateUser(form.value).then((res) => {
-            $message.success('修改成功')
-          })
+          // proxy.$http.updateUser(form.value).then((res) => {
+          //   Message.success('修改成功')
+          //   open.value = false
+          //   getList()
+          // })
         } else {
-          proxy.$http.addUser(form.value).then((res) => {
-            $message.success('新增成功')
-          })
+          // proxy.$http.addUser(form.value).then((res) => {
+          //   Message.success('新增成功')
+          //   open.value = false
+          //   getList()
+          // })
         }
       }
     })
-    .catch(() => {})
+    .catch(() => { })
+}
+/** 用户状态更改 */
+const handleStatusChange = (row) => {
+  let text = row.status === '0' ? '启用' : '停用'
+  Modal.confirm({
+    title: '提示',
+    content: `确认要${text}${row.userName}用户吗?`,
+    titleAlign: 'start',
+    onOk: () => {
+      // proxy.$http
+      //   .changeUserStatus({ userId: row.userId, status: row.status })
+      //   .then((res) => {
+      //     getList()
+      //     Message.success(`${text}成功`)
+      //   })
+      //   .catch(() => {
+      //     row.status = row.status === '0' ? '1' : '0'
+      //   })
+    },
+    onCancel: () => {
+      row.status = row.status === '0' ? '1' : '0'
+    },
+  })
 }
 
 /** 跳转角色分配 */
@@ -412,8 +416,7 @@ const handleAuthUser = (row) => {
 // 获取用户列表
 const getList = () => {
   loading.value = true
-  proxy.$http
-    .listUser(addDateRange(queryParams.value, dateRange.value))
+  getRequest('/system/user/list', addDateRange(queryParams.value, dateRange.value))
     .then((res) => {
       loading.value = false
       userList.value = res.rows
@@ -424,18 +427,19 @@ const getList = () => {
 }
 onMounted(() => {
   getList()
+  getDeptTree()
 })
 </script>
 <style lang="less" scoped>
 .user_search {
   width: 100%;
-  height: 100px;
   background-color: var(--color-bg-1);
-  padding: 0 15px;
+  padding: 20px 15px;
   display: flex;
   align-items: center;
   border-radius: 4px;
 }
+
 .user_content {
   width: 100%;
   background-color: var(--color-bg-1);
@@ -443,19 +447,23 @@ onMounted(() => {
   padding: 15px;
   border-radius: 4px;
 }
+
 .user_content_header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+
   .menu_content_title {
     font-size: 16px;
     font-weight: 700;
     color: var(--color-text-1);
   }
 }
+
 .user_table {
   margin-top: 16px;
 }
+
 .user_item_class {
   :deep(.arco-form-item-wrapper-col) {
     .arco-form-item-content-wrapper {
@@ -466,6 +474,7 @@ onMounted(() => {
     }
   }
 }
+
 .pwd-item {
   :deep(.arco-form-item-label-col) {
     display: none;

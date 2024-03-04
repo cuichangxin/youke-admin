@@ -33,13 +33,13 @@ export const constantRoutes = [
         path: '/index',
         name: 'Index',
         component: () => import('@/page/index.vue'),
-        meta: { title: '工作台', icon: 'workbench' },
+        meta: { title: '首页', icon: 'workbench' },
       },
     ]
   },
   {
     path: '/user',
-    hidden: false,
+    hidden: true,
     component: Layout,
     children: [
       {

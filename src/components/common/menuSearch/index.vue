@@ -11,7 +11,7 @@
     <div class="navbar-search-wrapper">
       <div class="navbar-search-input">
         <div class="navbar-search-input-left">
-          <icon-search size="22" class="search-icon" />
+          <Icon  :icon="'search'" class="search-icon"  />
           <input type="text" placeholder="Search" ref="inputRef" @input="onChange" />
         </div>
         <div class="navbar-search-input-right">

@@ -1,35 +1,28 @@
 <template>
   <a-dropdown trigger="contextMenu" :popup-max-height="false" @select="actionSelect">
-    <span
-      class="arco-tag arco-tag-size-medium arco-tag-checked"
-      :class="{ 'link-activated': itemData.path === $route.fullPath }"
-      @click="goto(itemData)"
-    >
-      <span class="tag-link">
-        {{ itemData.title }}
-      </span>
-      <span
-        class="arco-icon-hover arco-tag-icon-hover arco-icon-hover-size-medium arco-tag-close-btn"
-        @click.stop="tagClose(itemData, index)"
-      >
-        <icon-close />
+    <span class="arco-tag arco-tag-size-medium arco-tag-checked"
+      :class="{ 'link-activated': itemData.path === routePath }" @click="goto(itemData)">
+      <span class="tag-link"> {{ itemData.title }} </span>
+      <span class="arco-icon-hover arco-tag-icon-hover arco-icon-hover-size-medium arco-tag-close-btn"
+        @click.stop="tagClose(itemData, index)">
+        <Icon :icon="'close'" />
       </span>
     </span>
     <template #content>
       <a-doption :disabled="disabledReload" :value="Eaction.reload">
-        <icon-refresh />
+        <Icon :icon="'refresh'" />
         <span>重新加载</span>
       </a-doption>
       <a-doption class="sperate-line" :disabled="disabledCurrent" :value="Eaction.current">
-        <icon-close />
+        <Icon :icon="'close'" />
         <span>关闭当前标签页</span>
       </a-doption>
       <a-doption :value="Eaction.others">
-        <icon-swap />
+        <Icon :icon="'switch'" />
         <span>关闭其它标签页</span>
       </a-doption>
       <a-doption :value="Eaction.all">
-        <icon-folder-delete />
+        <Icon :icon="'delete-three'" />
         <span>关闭全部标签页</span>
       </a-doption>
     </template>
@@ -51,8 +44,13 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  routePath: {
+    type: String,
+  },
+  parentRoutePath: {
+    type: String,
+  }
 })
-
 const Eaction = {
   reload: 'reload',
   current: 'current',
@@ -65,7 +63,7 @@ const route = useRoute()
 const tabBarStore = useTabStore()
 
 const goto = (tag) => {
-  router.push({ path: tag.path })
+  router.push({ name: tag.name })
 }
 const tagList = computed(() => {
   return tabBarStore.getTabList
@@ -75,7 +73,9 @@ const disabledCurrent = computed(() => {
   return props.index === 0
 })
 const disabledReload = computed(() => {
-  return props.itemData.path !== route.fullPath
+  let pathSplit = route.path.split('/'),
+    path = pathSplit[pathSplit.length - 1]
+  return props.itemData.path !== path
 })
 
 const tagClose = (tag, idx) => {
@@ -98,7 +98,7 @@ const actionSelect = async (value) => {
     router.push({ path: props.itemData.path })
   } else if (value === Eaction.all) {
     tabBarStore.clearRouterTag()
-    router.push({ path: '/' })
+    router.replace({ path: '/' })
   } else {
     refreshPage(router.currentRoute)
   }
@@ -110,28 +110,35 @@ const actionSelect = async (value) => {
   color: var(--color-text-2);
   text-decoration: none;
 }
+
 .link-activated {
   color: rgb(var(--link-6));
+
   .tag-link {
     color: rgb(var(--link-6));
   }
-  & + .arco-tag-close-btn {
+
+  &+.arco-tag-close-btn {
     color: rgb(var(--link-6));
   }
 }
+
 :deep(.arco-dropdown-option-content) {
   span {
     margin-left: 10px;
   }
 }
+
 .arco-dropdown-open {
   .tag-link {
     color: rgb(var(--danger-6));
   }
+
   .arco-tag-close-btn {
     color: rgb(var(--danger-6));
   }
 }
+
 .sperate-line {
   border-bottom: 1px solid var(--color-neutral-3);
 }

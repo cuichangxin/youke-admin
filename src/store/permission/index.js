@@ -1,14 +1,14 @@
 import auth from '@/plugins/auth'
 import router, { constantRoutes, dynamicRoutes } from '@/router'
-import api from '@/api/api'
 import Layout from '@/layout/index'
 import ParentView from '@/components/common/ParentView'
 import InnerLink from '@/layout/components/InnerLink'
-import axios from 'axios'
 import { cloneDeep } from 'lodash'
+import { getRequest } from '@/api/mock_request.js'
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../page/**/*.vue')
+
 
 const usePermissionStore = defineStore(
   'permission',
@@ -23,7 +23,7 @@ const usePermissionStore = defineStore(
     actions: {
       setRoutes(routes) {
         this.addRoutes = routes
-        this.routes = constantRoutes.concat(routes).filter(item => !item.hidden)
+        this.routes = routes.filter(item => !item.hidden)
       },
       setDefaultRoutes(routes) {
         this.defaultRoutes = constantRoutes.concat(routes)
@@ -36,23 +36,16 @@ const usePermissionStore = defineStore(
       },
       generateRoutes(roles) {
         return new Promise(resolve => {
-          // 向后端请求路由数据
-          // TODO: 临时
-          // api.getRouters().then(res => {
-          axios.get('/list').then(res => {
-            // const sdata = JSON.parse(JSON.stringify(res.data))
-            // const rdata = JSON.parse(JSON.stringify(res.data))
-            // const defaultData = JSON.parse(JSON.stringify(res.data))
-
-            const sdata = cloneDeep(res.data.data)
-            const rdata = cloneDeep(res.data.data)
-            const defaultData = cloneDeep(res.data.data)
+          getRequest('/getRouters').then(res => {
+            const sdata = cloneDeep(res.data)
+            const rdata = cloneDeep(res.data)
+            const defaultData = cloneDeep(res.data)
             const sidebarRoutes = filterAsyncRouter(sdata)
             const rewriteRoutes = filterAsyncRouter(rdata, false, true)
             const defaultRoutes = filterAsyncRouter(defaultData)
             const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
             asyncRoutes.forEach(route => { router.addRoute(route) })
-            this.setRoutes(rewriteRoutes)
+            this.setRoutes(constantRoutes.concat(sidebarRoutes))
             this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
             this.setDefaultRoutes(defaultRoutes)
             this.setTopbarRoutes(constantRoutes.concat(defaultRoutes))
@@ -60,10 +53,10 @@ const usePermissionStore = defineStore(
           })
         })
       },
-      async updateRouteList(layoutModel, router) {
+      updateRouteList(layoutModel, router) {
         if (layoutModel === '1') {
-          let list = cloneDeep(this.topbarRouters)
-          this.topbarRouters = list.map(item => {
+          let topList = cloneDeep(this.topbarRouters)
+          this.topbarRouters = topList.map(item => {
             if (item.path === '/') {
               return item.children[0]
             }
@@ -74,9 +67,10 @@ const usePermissionStore = defineStore(
             }
             return item
           })
+
           if (router.matched[0].children.length > 1) {
-            let list = cloneDeep(this.routes)
-            this.sidebarRouters = list.map(item=>{
+            let leftList = cloneDeep(this.sidebarRouters)
+            this.sidebarRouters = leftList.map(item=>{
               if (item.path === router.matched[0].path) {
                 return item.children
               }
@@ -86,7 +80,7 @@ const usePermissionStore = defineStore(
           this.sidebarRouters = cloneDeep(this.routes)
         } else {
           this.topbarRouters = cloneDeep(this.routes)
-          this.sidebarRouters = []
+          this.sidebarRouters = this.routes
         }
       }
     }

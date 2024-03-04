@@ -20,41 +20,34 @@
     </div>
     <div class="role_content">
       <div class="role_content_header">
-        <div class="role_content_setting">
-          <a-space>
-            <a-button type="primary" @click="openSelectUser">
-              <template #icon>
-                <icon-plus />
-              </template>
-              <template #default>添加用户</template>
-            </a-button>
-            <a-button type="primary" status="danger" :disabled="removeFlag" @click="cancelAuthUserAll">
-              <template #icon>
-                <icon-delete />
-              </template>
-              <template #default>批量取消授权</template>
-            </a-button>
-            <a-button type="primary" status="warning" @click="goBack">
-              <template #icon>
-                <icon-close />
-              </template>
-              <template #default>关闭</template>
-            </a-button>
-            <a-tooltip content="刷新">
-              <a-button shape="circle" @click="getList">
-                <template #icon>
-                  <icon-refresh size="17" />
-                </template>
-              </a-button>
-            </a-tooltip>
-          </a-space>
-        </div>
+        <a-space>
+          <a-button type="primary" @click="openSelectUser">
+            <template #icon>
+              <Icon :icon="'plus'" />
+            </template>
+            <template #default>添加用户</template>
+          </a-button>
+          <a-button type="primary" status="danger" :disabled="removeFlag" @click="cancelAuthUserAll">
+            <template #icon>
+              <Icon :icon="'delete'" />
+            </template>
+            <template #default>批量取消授权</template>
+          </a-button>
+          <a-button type="primary" status="warning" @click="goBack">
+            <template #icon>
+              <Icon :icon="'close'" />
+            </template>
+            <template #default>关闭</template>
+          </a-button>
+        </a-space>
+        <RightTool @refreshTable="getList()"></RightTool>
       </div>
       <a-table
         class="role_table"
         :bordered="false"
         row-key="userId"
         :loading="loading"
+        :pagination="queryParams"
         :row-selection="rowSelection"
         :data="userList"
         @select="tableSelect"
@@ -84,6 +77,8 @@
 </template>
 <script setup>
 import selectUser from './selectUser.vue'
+import RightTool from '@/components/common/rightTableTool/index.vue'
+import { getRequest } from '@/api/mock_request'
 
 const router = useRouter()
 const route = useRoute()
@@ -101,39 +96,34 @@ const form = reactive({
 })
 const removeFlag = ref(true)
 const loading = ref(false)
-const userList = ref([
-  {
-    userId: '1',
-    userName: 'zs',
-    nickName: '嘿嘿',
-    phoneNumber: '15888888888',
-    status: '0',
-    createTime: '1997-01-01 00:00:00',
-  },
-])
+const userList = ref([])
 const cloneDeepTableData = ref([])
 const userIds = ref([])
 
-const search = ({ values, errors }) => {
-  if (!errors) {
-    if (Object.values(values).length <= 0) {
-      // 调用接口，重新加载数据
-    } else {
-      loading.value = true
-      // 关键字
-      const searchParam = Object.fromEntries(Object.entries(values).filter((e) => e[1] !== '')),
-        // 获取字段
-        filterCode = Object.keys(searchParam)
+const queryParams = reactive({
+  total:0,
+  pageNum: 1,
+  pageSize: 10,
+  roleId: route.params.roleId,
+  userName: undefined,
+  phonenumber: undefined,
+  showTotal: true,
+  showJumper: true,
+  showPageSize: true,
+})
 
-      const searchData = cloneDeepTableData.value.filter((data) => {
-        return filterCode.every((key) => {
-          return String(data[key]).toLowerCase().includes(searchParam[key].toLowerCase())
-        })
-      })
-      userList.value = searchData
-      loading.value = false
-    }
-  }
+/** 查询授权用户列表 */
+const getList = () => {
+  loading.value = true
+  getRequest('/system/role/authUser/allocatedList',queryParams).then((res) => {
+    queryParams.total = res.total
+    userList.value = res.rows
+    loading.value = false
+  })
+}
+
+const search = () => {
+  // getList()
 }
 const reset = () => {
   formRef.value.resetFields()
@@ -143,17 +133,15 @@ const goBack = () => {
 }
 // 取消授权操作
 const cancelAuthUser = (record) => {
-  const roleId = route.params.roleId
-  const uIds = userIds.value.join(',')
   $modal.confirm({
     title: '系统提示',
-    content: `确认要取消该用户${record.userName}角色吗?`,
+    content: `确认要取消该用户"${record.userName}"角色吗?`,
     titleAlign: 'start',
     onOk: () => {
-      proxy.$http.authUserCancel({ roleId: roleId, userId: record.userId }).then((res) => {
-        getList()
-        $message.success('取消授权成功')
-      })
+      // proxy.$http.authUserCancel({ roleId: route.params.roleId, userId: record.userId }).then((res) => {
+      //   getList()
+      //   $message.success('取消授权成功')
+      // })
     },
   })
 }
@@ -178,27 +166,16 @@ const cancelAuthUserAll = () => {
     content: `是否取消选中用户授权数据项?`,
     titleAlign: 'start',
     onOk: () => {
-      proxy.$http.authUserCancelAll({ roleId: roleId, userIds: uIds }).then((res) => {
-        getList()
-        $message.success('取消授权成功')
-      })
+      // proxy.$http.authUserCancelAll({ roleId: roleId, userIds: uIds }).then((res) => {
+      //   getList()
+      //   $message.success('取消授权成功')
+      //   removeFlag.value = true
+      // })
     },
   })
 }
-const getList = () => {
-  const params = {
-    roleId: route.params.roleId,
-    userName: undefined,
-    phoneNumber: undefined,
-  }
-  loading.value = true
-  proxy.$http.allocatedUserList(params).then((res) => {
-    userList.value = res.rows
-    loading.value = false
-  })
-}
 onMounted(() => {
-  // getList()
+  getList()
 })
 </script>
 <style lang="less" scoped>
@@ -218,7 +195,7 @@ onMounted(() => {
 }
 .role_content_header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   .role_content_title {
     font-size: 16px;

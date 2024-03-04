@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Modal, Message } from '@arco-design/web-vue'
-import { getToken } from "@/utils/auth";
+import { getToken, clearToken } from "@/utils/auth";
 import errorCode from "@/utils/errCode";
 import router from '../router/index'
 
@@ -38,15 +38,10 @@ import router from '../router/index'
 // }
 
 const Axios = axios.create({
-  baseURL:import.meta.env.VITE_APP_BASE_API,
-  timeoutL:100000,
-  headers:{'Content-Type':'application/json;charset=utf-8'}
+  baseURL: import.meta.env.VITE_APP_BASE_API,
+  timeoutL: 100000,
+  headers: { 'Content-Type': 'application/json;' }
 })
-
-
-// Axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
-
-// Axios.defaults.baseURL = 'http://39.105.98.46:16380'
 // 通用请求拦截器
 Axios.interceptors.request.use(
   config => {
@@ -69,17 +64,22 @@ Axios.interceptors.response.use(
     // 获取错误信息
     const msg = errorCode[code] || response.data.msg || errorCode['default']
     if (code === 401) {
-      Modal.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
-        router.replace({ path: '/login' })
-      }).catch(() => { })
+      Modal.confirm({
+        title: '系统提示',
+        content: '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        onOk: () => {
+          clearToken()
+          router.replace({ path: '/login' })
+        }
+      })
     } else if (code === 500) {
-      ElMessage({ message: msg, type: 'error' })
+      Message.error(msg)
       return Promise.reject(new Error(msg))
     } else if (code === 601) {
-      ElMessage({ message: msg, type: 'warning' })
+      Message.warning(msg)
       return Promise.reject(new Error(msg))
     } else if (code !== 200) {
-      ElMessage({message:msg,type:'error'})
+      Message.error(msg)
       return Promise.reject('error')
     } else {
       return Promise.resolve(response.data)
@@ -101,21 +101,4 @@ Axios.interceptors.response.use(
   }
 )
 
-function api(url, method = 'post') {
-  return function (params) {
-    try {
-      switch (method) {
-        case 'post':
-          return Axios.post(url, params)
-        case 'get':
-          return Axios.get(url, { params })
-        default:
-          throw new Error('请选择post或者get请求方法')
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-}
-
-export default api
+export default Axios

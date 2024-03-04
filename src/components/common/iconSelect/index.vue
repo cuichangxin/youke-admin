@@ -2,21 +2,21 @@
   <div class="icon_info">
     <a-input v-model="iconName" allow-clear placeholder="请输入图标名称" @clear="filterIcons" @input="filterIcons">
       <template #suffix>
-        <icon-search />
+        <Icon  :icon="'search'" />
       </template>
     </a-input>
   </div>
   <div class="icon_list">
-    <div class="icon_wrapper" v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
-      <div :class="['icon_item', { active: activeIcon === item }]">
-        <icons :icon="item" size="19"></icons>
-        <div class="icon_title">{{ item }}</div>
+    <div class="icon_wrapper" v-for="item in iconList.slice((current-1) * pageSize,current*pageSize)" :key="item.name" @click="selectedIcon(item.name)">
+      <div :class="['icon_item', { active: activeIcon === item.name }]" :title="item.name">
+        <Icon :icon="item.name" />
       </div>
     </div>
+    <a-pagination :total="iconList.length" v-model:current="current" v-model:page-size="pageSize" simple/>
   </div>
 </template>
 <script setup>
-import icons from '../icon/index.vue'
+import icons from '@/config/icons.json'
 
 const props = defineProps({
   activeIcon: {
@@ -25,60 +25,11 @@ const props = defineProps({
 })
 const emit = defineEmits(['selected'])
 
-const iconList = ref([
-  'all-application',
-  'bill',
-  'bookmark',
-  'bookmark-one',
-  'config',
-  'equalizer',
-  'hamburger-button',
-  'home',
-  'lightning',
-  'like',
-  'more-app',
-  'power',
-  'setting',
-  'setting-config',
-  'setting-one',
-  'setting-three',
-  'setting-two',
-  'system',
-  'tool',
-  'waterfalls-h',
-  'bug',
-  'caution',
-  'harm',
-  'key',
-  'shield',
-  'announcement',
-  'application-effect',
-  'compression',
-  'data-file',
-  'file-code',
-  'file-code-one',
-  'inbox',
-  'inbox-in',
-  'link',
-  'permissions',
-  'schedule',
-  'source-code',
-  'view-list',
-  'page',
-  'page-template',
-  'tree-list',
-  'anchor',
-  'anchor-one',
-  'anchor-round',
-  'anchor-squre',
-  'assembly-line',
-  'branch-one',
-  'branch-two',
-  'branch',
-  'link-cloud-sucess',
-])
+const iconList = ref(icons)
 const cloneIconList = ref([])
 const iconName = ref('')
+const current = ref(1)
+const pageSize = ref(24)
 
 const selectedIcon = (name) => {
   emit('selected', name)
@@ -107,31 +58,32 @@ onMounted(() => {
 }
 .icon_list {
   padding-top: 15px;
-  max-height: 200px;
   display: flex;
   flex-wrap: wrap;
-  overflow: auto;
   .icon_wrapper {
-    height: 26px;
-    margin: 8px 3px;
+    margin: 8px 12px;
     display: flex;
     cursor: pointer;
     .icon_item {
       display: flex;
-      padding: 4px;
-      .icon_title {
-        font-size: 12px;
-        margin-left: 3px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid var(--color-border);
+      .i-icon{
+        display: flex;
       }
       &:hover {
         background-color: var(--color-fill-2);
-        border-radius: 5px;
       }
     }
     .icon_item.active {
       background-color: var(--color-fill-2);
-      border-radius: 5px;
     }
   }
+}
+.arco-pagination{
+  flex: 1;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>

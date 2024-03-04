@@ -42,11 +42,13 @@
 </template>
 <script setup>
 import { useTabStore } from '@/store'
+import { Message } from '@arco-design/web-vue';
+import { getRequest } from '@/api/mock_request';
+
 const tabStore = useTabStore()
 const router = useRouter()
 const route = useRoute()
 const { proxy } = getCurrentInstance()
-const { $modal, $message } = getCurrentInstance().appContext.config.globalProperties
 
 const form = ref({
   nickName: undefined,
@@ -77,39 +79,17 @@ const columns = [
     dataIndex: 'createTime',
   },
 ]
-const roleList = ref([
-  {
-    createBy: null,
-    createTime: '2023-04-23 16:11:46',
-    updateBy: null,
-    updateTime: null,
-    remark: '普通角色',
-    roleId: 2,
-    roleName: '普通角色',
-    roleKey: 'common',
-    roleSort: 2,
-    dataScope: '2',
-    menuCheckStrictly: true,
-    deptCheckStrictly: true,
-    status: '0',
-    delFlag: '0',
-    flag: true,
-    menuIds: null,
-    deptIds: null,
-    permissions: null,
-    admin: false,
-  },
-])
+const roleList = ref([])
 const selectedKeys = ref([])
 
 // 提交按钮
 const submitForm = () => {
   const userId = form.value.userId
   const rIds = selectedKeys.value.join(',')
-  proxy.$http.updateAuthRole({ userId: userId, roleIds: rIds }).then((response) => {
-    $message.msgSuccess('授权成功')
-    close()
-  })
+  // proxy.$http.updateAuthRole({ userId: userId, roleIds: rIds }).then((response) => {
+    Message.success('授权成功')
+  //   close()
+  // })
 }
 // 返回按钮
 function close() {
@@ -121,7 +101,7 @@ onMounted(() => {
   const userId = route.params && route.params.userId
   if (userId) {
     loading.value = true
-    proxy.$http.getAuthRole({ userId }).then((res) => {
+    getRequest('/system/user/authRole/' + userId).then((res) => {
       form.value = res.user
       roleList.value = res.roles
       nextTick(() => {
