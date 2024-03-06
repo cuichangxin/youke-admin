@@ -2,7 +2,6 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es6: true,
   },
   parser: 'vue-eslint-parser',
   /* 继承已有的规则 */
