@@ -1,22 +1,20 @@
 <template>
   <div class="navbar">
-    <div class="left-side">
+    <div v-if="layoutMode != 5" class="left-side">
       <a-space>
         <img class="logo_img" alt="logo" src="/favicon.ico" />
-        <a-typography-title :style="{ margin: 0, fontSize: '18px' }" :heading="5">
-          载荷监控测试计算机
-        </a-typography-title>
+        <a-typography-title :style="{ margin: 0, fontSize: '18px' }" :heading="5"> youke-admin </a-typography-title>
       </a-space>
     </div>
     <div class="center-side">
-      <TopNav v-if="topNav" />
+      <TopNav v-if="topNav && layoutMode != 5" />
     </div>
     <ul class="right-side">
       <li>
         <a-tooltip content="搜索">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleSearch">
             <template #icon>
-              <Icon  :icon="'search'" />
+              <Icon :icon="'search'" />
             </template>
           </a-button>
         </a-tooltip>
@@ -25,7 +23,7 @@
         <a-tooltip :content="theme === 'light' ? '点击切换为暗黑模式' : '点击切换为亮色模式'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="handleToggleTheme">
             <template #icon>
-              <Icon v-if="theme === 'dark'"  :icon="'moon'" />
+              <Icon v-if="theme === 'dark'" :icon="'moon'" />
               <Icon v-else :icon="'sun'" />
             </template>
           </a-button>
@@ -35,7 +33,7 @@
         <a-tooltip :content="isFullscreen ? '点击退出全屏模式' : '点击切换全屏模式'">
           <a-button class="nav-btn" type="outline" :shape="'circle'" @click="toggleFullScreen">
             <template #icon>
-              <Icon v-if="isFullscreen"  :icon="'off-screen'" />
+              <Icon v-if="isFullscreen" :icon="'off-screen'" />
               <Icon v-else :icon="'full-screen'" />
             </template>
           </a-button>
@@ -55,6 +53,7 @@
           <a-avatar :size="32" :style="{ marginRight: '8px', cursor: 'pointer' }">
             <img alt="avatar" :src="avatar" />
           </a-avatar>
+
           <template #content>
             <a-doption>
               <a-space @click="$router.push({ name: 'MyCenter' })">
@@ -92,12 +91,13 @@ const theme = computed(() => {
   return appStore.theme
 })
 const topNav = computed(() => {
-  if (appStore.layoutMode == 4 || appStore.layoutMode == 3) {
+  if (appStore.layoutMode === '4' || appStore.layoutMode === '3') {
     return false
   } else {
     return true
   }
 })
+const layoutMode = computed(() => appStore.layoutMode)
 const searchRef = ref(null)
 
 const isDark = useDark({
@@ -211,4 +211,5 @@ const setVisible = () => {
   .arco-popover-content {
     margin-top: 0;
   }
-}</style>
+}
+</style>

@@ -3,7 +3,7 @@
     <div class="user_auth">
       <h4>基本信息</h4>
       <a-space class="space_user">
-        <a-form :model="form" layout="inline" ref="formRef">
+        <a-form ref="formRef" :model="form" layout="inline">
           <a-row>
             <a-col :span="12">
               <a-form-item field="nickName" label="用户昵称">
@@ -22,14 +22,14 @@
     <div class="auth_table">
       <h4>角色信息</h4>
       <a-table
+        ref="roleRef"
+        v-model:selectedKeys="selectedKeys"
         :bordered="false"
         :columns="columns"
         row-key="roleId"
         :loading="loading"
         :data="roleList"
         :row-selection="rowSelection"
-        v-model:selectedKeys="selectedKeys"
-        ref="roleRef"
       />
       <div class="button-group">
         <a-space :size="20">
@@ -40,10 +40,11 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { useTabStore } from '@/store'
-import { Message } from '@arco-design/web-vue';
-import { getRequest } from '@/api/mock_request';
+import { Message } from '@arco-design/web-vue'
+import { getRequest } from '@/api/mock_request'
 
 const tabStore = useTabStore()
 const router = useRouter()
@@ -87,7 +88,7 @@ const submitForm = () => {
   const userId = form.value.userId
   const rIds = selectedKeys.value.join(',')
   // proxy.$http.updateAuthRole({ userId: userId, roleIds: rIds }).then((response) => {
-    Message.success('授权成功')
+  Message.success('授权成功')
   //   close()
   // })
 }
@@ -95,17 +96,17 @@ const submitForm = () => {
 function close() {
   tabStore.removeRouterTagFormPath('/system/user-auth')
   router.push('/system/user')
-};
+}
 
 onMounted(() => {
   const userId = route.params && route.params.userId
   if (userId) {
     loading.value = true
-    getRequest('/system/user/authRole/' + userId).then((res) => {
+    getRequest('/system/user/authRole/' + userId).then(res => {
       form.value = res.user
       roleList.value = res.roles
       nextTick(() => {
-        roleList.value.forEach((row) => {
+        roleList.value.forEach(row => {
           if (row.flag) {
             proxy.$refs['roleRef'].select(row.roleKey, true)
           }
@@ -116,6 +117,7 @@ onMounted(() => {
   }
 })
 </script>
+
 <style lang="less" scoped>
 .user_auth {
   width: 100%;

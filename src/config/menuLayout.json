@@ -30,5 +30,13 @@
     "menuPosition": "sidebar",
     "navbarShow": true,
     "sidebarShow": true
+  },
+  {
+    "value": "5",
+    "name": "混合模式+菜单只在侧边栏并且占满侧边",
+    "details": "混合模式+菜单只在侧边栏。菜单只在侧边栏且占满侧边，树形排列。",
+    "menuPosition": "sidebar",
+    "navbarShow": true,
+    "sidebarShow": true
   }
 ]

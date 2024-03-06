@@ -25,4 +25,5 @@ onMounted(() => {
   <router-view />
   <global-setting />
 </template>
+
 <style lang="less" scoped></style>

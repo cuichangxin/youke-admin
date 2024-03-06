@@ -12,5 +12,6 @@
   "menuWidth": 200,
   "globalSettings": false,
   "tabBar": false,
-  "loading": true
+  "loading": true,
+  "menuColors":"dark"
 }

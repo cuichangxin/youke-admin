@@ -1,14 +1,14 @@
 /**
-* v-hasRole 角色权限处理
-* Copyright (c) 2019 ruoyi
-*/
+ * v-hasRole 角色权限处理
+ * Copyright (c) 2019 ruoyi
+ */
 
 import { useUserStore } from '@/store'
 
 export default {
   mounted(el, binding, vnode) {
     const { value } = binding
-    const super_admin = "admin";
+    const super_admin = 'admin'
     const roles = useUserStore().role
 
     if (value && value instanceof Array && value.length > 0) {
@@ -24,5 +24,5 @@ export default {
     } else {
       throw new Error(`请设置角色权限标签值`)
     }
-  }
+  },
 }

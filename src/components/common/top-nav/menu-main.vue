@@ -1,8 +1,7 @@
 <template>
   <a-menu mode="horizontal" :selected-keys="[navSelectKeys]" @menu-item-click="clickMenu">
-    <template v-for="(route, index) in routeList">
+    <template v-for="route in routeList">
       <template v-if="!route.hidden">
-
         <template v-if="route.path == '/'">
           <a-menu-item :key="route.children[0].path">
             <template #icon>
@@ -11,7 +10,7 @@
             <span>{{ route.children[0].meta.title }}</span>
           </a-menu-item>
         </template>
-        
+
         <template v-else-if="!route.hasOwnProperty('children')">
           <a-menu-item :key="route.path">
             <template #icon>
@@ -33,6 +32,7 @@
     </template>
   </a-menu>
 </template>
+
 <script setup>
 import menuSub from './menu-sub.vue'
 import { listenerRouteChange } from '@/utils/route-listener'
@@ -49,23 +49,23 @@ const appStore = useAppStore()
 const routeList = computed(() => permissionStore.topbarRouters)
 const routes = computed(() => permissionStore.routes)
 
-listenerRouteChange((e) => {
+listenerRouteChange(e => {
   const cutPath = e.path.split('/'),
     path = cutPath[cutPath.length - 1]
   findMenuItem(routeList.value, path)
 
-  changeSelectKey(cutPath,path)
+  changeSelectKey(cutPath, path)
 })
 
-const clickMenu = (key) => {
+const clickMenu = key => {
   navSelectKeys.value = key
   if (appStore.layoutMode == 1) {
     let nowMenu
 
     if (key === '/dashboard') {
-      nowMenu = routes.value.find((item) => item.path === '/').children[0]
+      nowMenu = routes.value.find(item => item.path === '/').children[0]
     } else {
-      nowMenu = routes.value.find((item) => item.path === key)
+      nowMenu = routes.value.find(item => item.path === key)
     }
     if (isHttp(key)) {
       window.open(key, '_blank')
@@ -90,7 +90,7 @@ const clickMenu = (key) => {
 }
 
 function findMenuItem(data, path) {
-  data.forEach((item) => {
+  data.forEach(item => {
     if (item.path === path) {
       tabStore.updateTabList(item)
     } else if (item?.children) {
@@ -101,7 +101,7 @@ function findMenuItem(data, path) {
 
 function updateSideBarMenu(key) {
   const routeList = routes.value
-    .map((item) => {
+    .map(item => {
       if (item.path === key) return item.children
     })
     .filter(Boolean)[0]
@@ -115,7 +115,7 @@ function updateSideBarMenu(key) {
   }
 }
 
-function changeSelectKey(cutPath,path) {
+function changeSelectKey(cutPath, path) {
   if (layoutMode.value === '1') {
     navSelectKeys.value = '/' + cutPath[1]
   }
@@ -124,12 +124,16 @@ function changeSelectKey(cutPath,path) {
   }
 }
 
-watch(()=>layoutMode.value,(n)=>{
-  const cutPath = route.path.split('/'),
-    path = cutPath[cutPath.length - 1]
-    changeSelectKey(cutPath,path)
-})
+watch(
+  () => layoutMode.value,
+  n => {
+    const cutPath = route.path.split('/'),
+      path = cutPath[cutPath.length - 1]
+    changeSelectKey(cutPath, path)
+  },
+)
 </script>
+
 <style lang="less" scoped>
 .arco-menu-horizontal {
   :deep(.arco-menu-item) {
@@ -158,4 +162,5 @@ watch(()=>layoutMode.value,(n)=>{
   display: flex;
   align-items: center;
   margin-right: 12px;
-}</style>
+}
+</style>

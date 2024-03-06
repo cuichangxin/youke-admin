@@ -18,7 +18,14 @@
         <div class="login-wrapper box">
           <div class="login-title">登录</div>
           <div class="login-form-error-msg">{{ errorMessage }}</div>
-          <a-form ref="loginForm" class="login-form" size="large" :model="userInfo" layout="vertical" @submit="handleSubmit">
+          <a-form
+            ref="loginForm"
+            class="login-form"
+            size="large"
+            :model="userInfo"
+            layout="vertical"
+            @submit="handleSubmit"
+          >
             <a-form-item
               field="username"
               :rules="[{ required: true, message: '用户名不能为空' }]"
@@ -64,6 +71,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { useUserStore } from '@/store'
 import { Message } from '@arco-design/web-vue'
@@ -114,7 +122,7 @@ const handleSubmit = async ({ values, errors }) => {
     }
   }
 }
-const setRememberPassword = (value) => {
+const setRememberPassword = value => {
   userInfo.value.rememberPassword = value
 }
 function getCookie() {
@@ -130,6 +138,7 @@ onMounted(() => {
   title.value = document.title
 })
 </script>
+
 <style lang="less" scoped>
 .login-bg {
   width: 100%;
@@ -152,8 +161,8 @@ onMounted(() => {
     background-size: auto 100%;
   }
 }
-body[arco-theme='dark'] .login-bg{
-  &::before{
+body[arco-theme='dark'] .login-bg {
+  &::before {
     background-image: url('../assets/svg/backgrond-dark.svg');
   }
 }
@@ -196,13 +205,13 @@ body[arco-theme='dark'] .login-bg{
         width: 90%;
       }
     }
-    .app-logo{
+    .app-logo {
       left: 16px;
       top: 0;
-      img{
+      img {
         width: 35px;
       }
-      .logo-title{
+      .logo-title {
         font-size: 16px;
       }
     }

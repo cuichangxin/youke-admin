@@ -2,7 +2,7 @@
   <div>
     <div class="role_search">
       <a-space>
-        <a-form :model="queryParams" layout="inline" ref="formRef" @submit="search">
+        <a-form ref="formRef" :model="queryParams" layout="inline" @submit="search">
           <a-form-item field="roleName" label="角色名称">
             <a-input v-model="queryParams.roleName" />
           </a-form-item>
@@ -10,13 +10,13 @@
             <a-input v-model="queryParams.roleKey" />
           </a-form-item>
           <a-form-item field="status" label="状态">
-            <a-select :style="{ width: '180px' }" v-model="queryParams.status" allow-clear>
+            <a-select v-model="queryParams.status" :style="{ width: '180px' }" allow-clear>
               <a-option value="0" label="正常"></a-option>
               <a-option value="1" label="停用"></a-option>
             </a-select>
           </a-form-item>
           <a-form-item label="创建时间">
-            <a-range-picker style="width: 254px" v-model="dateRange" :time-picker-props="{}" format="YYYY-MM-DD" />
+            <a-range-picker v-model="dateRange" style="width: 254px" :time-picker-props="{}" format="YYYY-MM-DD" />
           </a-form-item>
           <a-form-item>
             <a-space>
@@ -31,14 +31,19 @@
     <div class="role_content">
       <div class="role_content_header">
         <a-space>
-          <a-button type="primary" @click="addRole" v-hasPermi="['system:role:add']">
+          <a-button v-hasPermi="['system:role:add']" type="primary" @click="addRole">
             <template #icon>
               <Icon :icon="'plus'" />
             </template>
             <template #default>新增</template>
           </a-button>
-          <a-button type="primary" status="danger" :disabled="removeFlag" @click="handleDelete"
-            v-hasPermi="['system:role:remove']">
+          <a-button
+            v-hasPermi="['system:role:remove']"
+            type="primary"
+            status="danger"
+            :disabled="removeFlag"
+            @click="handleDelete"
+          >
             <template #icon>
               <Icon :icon="'delete'" />
             </template>
@@ -56,29 +61,70 @@
         </a-space>
       </div>
 
-      <a-table class="role_table" :bordered="false" row-key="roleId" :loading="loading" :row-selection="rowSelection"
-        :data="roleList" ref="tableRef" @select="tableSelect">
+      <a-table
+        ref="tableRef"
+        class="role_table"
+        :bordered="false"
+        row-key="roleId"
+        :loading="loading"
+        :row-selection="rowSelection"
+        :data="roleList"
+        @select="tableSelect"
+      >
         <template #columns>
-          <a-table-column title="角色编号" :width="120" data-index="roleId" align="center"
-            :sortable="{ sortDirections: ['ascend', 'descend'] }"></a-table-column>
-          <a-table-column title="角色名称" data-index="roleName" align="center"
-            :sortable="{ sortDirections: ['ascend', 'descend'] }" />
+          <a-table-column
+            title="角色编号"
+            :width="120"
+            data-index="roleId"
+            align="center"
+            :sortable="{ sortDirections: ['ascend', 'descend'] }"
+          ></a-table-column>
+          <a-table-column
+            title="角色名称"
+            data-index="roleName"
+            align="center"
+            :sortable="{ sortDirections: ['ascend', 'descend'] }"
+          />
           <a-table-column title="权限字符" data-index="roleKey" align="center" />
           <a-table-column title="显示顺序" data-index="roleSort" align="center" />
           <a-table-column title="状态" data-index="status" align="center">
             <template #cell="{ record }">
-              <a-switch v-model="record.status" checked-value="0" unchecked-value="1" @change="handleStatusChange(record)"></a-switch>
+              <a-switch
+                v-model="record.status"
+                checked-value="0"
+                unchecked-value="1"
+                @change="handleStatusChange(record)"
+              ></a-switch>
             </template>
           </a-table-column>
           <a-table-column title="创建时间" data-index="createTime" align="center"></a-table-column>
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button v-if="record.roleId != '1'" type="text" size="mini" @click="changeRole(record)"
-                v-hasPermi="['system:role:edit']">修改</a-button>
-              <a-button v-if="record.roleId != '1'" type="text" size="mini" status="danger" @click="handleDelete(record)"
-                v-hasPermi="['system:role:remove']">删除</a-button>
-              <a-button v-if="record.roleId != '1'" type="text" size="mini" @click="handleAuthUser(record)"
-                v-hasPermi="['system:role:edit']">分配用户</a-button>
+              <a-button
+                v-if="record.roleId != '1'"
+                v-hasPermi="['system:role:edit']"
+                type="text"
+                size="mini"
+                @click="changeRole(record)"
+                >修改</a-button
+              >
+              <a-button
+                v-if="record.roleId != '1'"
+                v-hasPermi="['system:role:remove']"
+                type="text"
+                size="mini"
+                status="danger"
+                @click="handleDelete(record)"
+                >删除</a-button
+              >
+              <a-button
+                v-if="record.roleId != '1'"
+                v-hasPermi="['system:role:edit']"
+                type="text"
+                size="mini"
+                @click="handleAuthUser(record)"
+                >分配用户</a-button
+              >
             </template>
           </a-table-column>
         </template>
@@ -86,12 +132,17 @@
     </div>
 
     <a-modal v-model:visible="visible" :title="`${dialogTitleFlag ? '新增' : '修改'}角色`" :on-before-ok="handleOk">
-      <a-form :model="form" :auto-label-width="true" ref="modalFormRef">
+      <a-form ref="modalFormRef" :model="form" :auto-label-width="true">
         <a-form-item field="roleName" label="角色名称" :rules="[{ required: true, message: '角色名称不能为空' }]">
           <a-input v-model="form.roleName" />
         </a-form-item>
-        <a-form-item required field="roleKey" label="权限字符" tooltip="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)"
-          :rules="[{ required: true, message: '权限字符不能为空' }]">
+        <a-form-item
+          required
+          field="roleKey"
+          label="权限字符"
+          tooltip="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)"
+          :rules="[{ required: true, message: '权限字符不能为空' }]"
+        >
           <a-input v-model="form.roleKey" />
         </a-form-item>
         <a-form-item field="roleSort" label="角色顺序" :rules="[{ required: true, message: '角色顺序不能为空' }]">
@@ -111,9 +162,16 @@
             <a-checkbox v-model="checkAllFlag" @change="handleCheckAll">全选/全不选</a-checkbox>
             <a-checkbox v-model="treeStrictly" @change="handleStrictly">父子关联</a-checkbox>
           </a-space>
-          <a-tree class="menus_tree" ref="treeRef" :checkable="true" :field-names="{ title: 'label', key: 'id' }"
-            :check-strictly="!treeStrictly" :default-expanded-keys="treeCheckList" v-model="form.menuKeys"
-            :data="treeData" />
+          <a-tree
+            ref="treeRef"
+            v-model="form.menuKeys"
+            class="menus_tree"
+            :checkable="true"
+            :field-names="{ title: 'label', key: 'id' }"
+            :check-strictly="!treeStrictly"
+            :default-expanded-keys="treeCheckList"
+            :data="treeData"
+          />
         </a-form-item>
         <a-form-item field="remark" label="备注">
           <a-textarea v-model="form.remark" />
@@ -122,10 +180,11 @@
     </a-modal>
   </div>
 </template>
+
 <script setup>
 import { addDateRange } from '@/utils/utils'
-import { Message, Modal } from '@arco-design/web-vue';
-import { getRequest } from '@/api/mock_request';
+import { Message, Modal } from '@arco-design/web-vue'
+import { getRequest } from '@/api/mock_request'
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()
@@ -196,13 +255,13 @@ const addRole = () => {
   treeRef.value.checkAll(false)
   visible.value = true
   dialogTitleFlag.value = true
-  getRequest('/system/menu/treeselect').then((res) => {
+  getRequest('/system/menu/treeselect').then(res => {
     treeData.value = res.data
     treeCheckList.value = []
   })
 }
 // 删除
-const handleDelete = (record) => {
+const handleDelete = record => {
   const roleIds = record.roleId || tableSelectList.value
   Modal.confirm({
     title: '系统提示',
@@ -259,32 +318,32 @@ const handleOk = async () => {
 /** 根据角色ID查询菜单树结构 */
 function getRoleMenuTreeselect(roleId) {
   return new Promise((resolve, reject) => {
-    getRequest('/system/menu/roleMenuTreeselect/' + roleId).then((response) => {
+    getRequest('/system/menu/roleMenuTreeselect/' + roleId).then(response => {
       treeData.value = response.menus
       resolve(response)
     })
   })
 }
 // 修改角色
-const changeRole = (record) => {
+const changeRole = record => {
   reset()
   treeRef.value.checkAll(false)
   dialogTitleFlag.value = false
   const roleId = record.roleId || ids.value
   const roleMenu = getRoleMenuTreeselect(roleId)
-  getRequest('/system/role/detail/' + roleId).then((res) => {
+  getRequest('/system/role/detail/' + roleId).then(res => {
     form.value = res.data
     form.value.roleSort = Number(form.value.roleSort)
     visible.value = true
-    roleMenu.then((response) => {
+    roleMenu.then(response => {
       let checkedKeys = response.checkedKeys
-      checkedKeys.forEach((v) => {
+      checkedKeys.forEach(v => {
         treeRef.value.checkNode(v, true, true)
       })
     })
   })
 }
-const handleExpand = (value) => {
+const handleExpand = value => {
   expandFlag.value = value
   if (value) {
     treeRef.value.expandAll(true)
@@ -292,7 +351,7 @@ const handleExpand = (value) => {
     treeRef.value.expandAll(false)
   }
 }
-const handleCheckAll = (value) => {
+const handleCheckAll = value => {
   checkAllFlag.value = value
   if (value) {
     treeRef.value.checkAll(true)
@@ -300,11 +359,11 @@ const handleCheckAll = (value) => {
     treeRef.value.checkAll(false)
   }
 }
-const handleStrictly = (value) => {
+const handleStrictly = value => {
   treeStrictly.value = value
 }
 
-const tableSelect = (rowKeys) => {
+const tableSelect = rowKeys => {
   tableSelectList.value = rowKeys
   if (rowKeys.length > 0) {
     removeFlag.value = false
@@ -313,7 +372,7 @@ const tableSelect = (rowKeys) => {
   }
 }
 // 角色状态修改
-const handleStatusChange = (record) => {
+const handleStatusChange = record => {
   let text = record.status === '0' ? '启用' : '停用'
   Modal.confirm({
     title: '系统提示',
@@ -332,18 +391,18 @@ const handleStatusChange = (record) => {
 }
 
 /** 分配用户 */
-const handleAuthUser = (record) => {
+const handleAuthUser = record => {
   router.push('/system/role-auth/user/' + record.roleId)
 }
 
 const getList = () => {
   loading.value = true
-  getRequest('/system/role/list',addDateRange(queryParams.value, dateRange.value))
-    .then((res) => {
+  getRequest('/system/role/list', addDateRange(queryParams.value, dateRange.value))
+    .then(res => {
       roleList.value = res.rows
       loading.value = false
     })
-    .catch((error) => {
+    .catch(error => {
       loading.value = false
     })
 }
@@ -351,6 +410,7 @@ onMounted(() => {
   getList()
 })
 </script>
+
 <style lang="less" scoped>
 .role_search {
   width: 100%;

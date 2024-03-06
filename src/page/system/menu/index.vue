@@ -2,12 +2,12 @@
   <div>
     <div class="menu_search">
       <a-space>
-        <a-form :model="queryParams" layout="inline" ref="formRef" @submit="search">
+        <a-form ref="formRef" :model="queryParams" layout="inline" @submit="search">
           <a-form-item field="menuName" label="菜单名称">
             <a-input v-model="queryParams.menuName" />
           </a-form-item>
           <a-form-item field="status" label="状态">
-            <a-select :style="{ width: '180px' }" v-model="queryParams.status" allow-clear>
+            <a-select v-model="queryParams.status" :style="{ width: '180px' }" allow-clear>
               <a-option value="0" label="正常"></a-option>
               <a-option value="1" label="停用"></a-option>
             </a-select>
@@ -49,8 +49,15 @@
         </a-space>
       </div>
 
-      <a-table v-if="refreshTable" class="menu_table" :bordered="false" row-key="menuId"
-        :default-expand-all-rows="isExpandAll" :loading="loading" :data="menuList">
+      <a-table
+        v-if="refreshTable"
+        class="menu_table"
+        :bordered="false"
+        row-key="menuId"
+        :default-expand-all-rows="isExpandAll"
+        :loading="loading"
+        :data="menuList"
+      >
         <template #columns>
           <a-table-column title="菜单名称" data-index="menuName" align="center"></a-table-column>
           <a-table-column title="图标" data-index="icon" align="center">
@@ -71,11 +78,20 @@
           <a-table-column title="创建时间" data-index="createTime" align="center"></a-table-column>
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button type="text" size="mini" @click="handleUpdate(record)"
-                v-hasPermi="['system:menu:edit']">修改</a-button>
-              <a-button type="text" size="mini" @click="handleAdd(record)" v-hasPermi="['system:menu:add']">新增</a-button>
-              <a-button type="text" size="mini" status="danger" @click="handleDelete(record)"
-                v-hasPermi="['system:menu:remove']">删除</a-button>
+              <a-button v-hasPermi="['system:menu:edit']" type="text" size="mini" @click="handleUpdate(record)"
+                >修改</a-button
+              >
+              <a-button v-hasPermi="['system:menu:add']" type="text" size="mini" @click="handleAdd(record)"
+                >新增</a-button
+              >
+              <a-button
+                v-hasPermi="['system:menu:remove']"
+                type="text"
+                size="mini"
+                status="danger"
+                @click="handleDelete(record)"
+                >删除</a-button
+              >
             </template>
           </a-table-column>
         </template>
@@ -83,13 +99,18 @@
 
       <!-- 新增/修改dialog -->
       <a-modal v-model:visible="open" :title="title" :width="700">
-        <a-form :model="form" :rules="rules" ref="menuRef">
+        <a-form ref="menuRef" :model="form" :rules="rules">
           <a-row>
             <a-col :span="24">
               <a-form-item label="上级菜单" label-col-flex="100px">
-                <a-tree-select v-model="form.parentId" :data="menuOptions"
-                  :fieldNames="{ key: 'menuId', title: 'menuName', children: 'children', icon: 'icons' }"
-                  placeholder="选择上级菜单" allow-clear check-strictly></a-tree-select>
+                <a-tree-select
+                  v-model="form.parentId"
+                  :data="menuOptions"
+                  :field-names="{ key: 'menuId', title: 'menuName', children: 'children', icon: 'icons' }"
+                  placeholder="选择上级菜单"
+                  allow-clear
+                  check-strictly
+                ></a-tree-select>
               </a-form-item>
             </a-col>
             <a-col :span="24">
@@ -101,17 +122,17 @@
                 </a-radio-group>
               </a-form-item>
             </a-col>
-            <a-col :span="24" v-if="form.menuType != 'F'">
+            <a-col v-if="form.menuType != 'F'" :span="24">
               <a-form-item label="菜单图标" field="icon" label-col-flex="100px">
                 <a-popover trigger="click" position="bottom" style="width: 380px">
                   <a-input v-model="form.icon" :readonly="true" placeholder="请选择图标">
                     <template #prefix>
                       <Icon v-if="form.icon" :key="form.icon" :icon="form.icon"></Icon>
-                      <Icon  :icon="'search'" v-else />
+                      <Icon v-else :icon="'search'" />
                     </template>
                   </a-input>
                   <template #content>
-                    <iconSelect @selected="selected" :active-icon="form.icon" />
+                    <iconSelect :active-icon="form.icon" @selected="selected" />
                   </template>
                 </a-popover>
               </a-form-item>
@@ -126,48 +147,79 @@
                 <a-input-number v-model="form.orderNum" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType != 'F'">
-              <a-form-item label="是否外链" field="isFrame" tooltip="选择是外链则路由地址需要以`http(s)://`开头" label-col-flex="100px">
+            <a-col v-if="form.menuType != 'F'" :span="12">
+              <a-form-item
+                label="是否外链"
+                field="isFrame"
+                tooltip="选择是外链则路由地址需要以`http(s)://`开头"
+                label-col-flex="100px"
+              >
                 <a-radio-group v-model="form.isFrame">
                   <a-radio value="0">是</a-radio>
                   <a-radio value="1">否</a-radio>
                 </a-radio-group>
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType != 'F'">
-              <a-form-item label="路由地址" field="path" tooltip="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头"
-                label-col-flex="100px">
+            <a-col v-if="form.menuType != 'F'" :span="12">
+              <a-form-item
+                label="路由地址"
+                field="path"
+                tooltip="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头"
+                label-col-flex="100px"
+              >
                 <a-input v-model="form.path" placeholder="请输入路由地址" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType == 'C'">
-              <a-form-item label="组件路径" field="component" tooltip="访问的组件路径，如：`system/user/index`" label-col-flex="100px">
+            <a-col v-if="form.menuType == 'C'" :span="12">
+              <a-form-item
+                label="组件路径"
+                field="component"
+                tooltip="访问的组件路径，如：`system/user/index`"
+                label-col-flex="100px"
+              >
                 <a-input v-model="form.component" placeholder="请输入组件路径" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType != 'M'">
-              <a-form-item label="权限字符" field="perms"
-                tooltip="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)" label-col-flex="100px">
+            <a-col v-if="form.menuType != 'M'" :span="12">
+              <a-form-item
+                label="权限字符"
+                field="perms"
+                tooltip="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)"
+                label-col-flex="100px"
+              >
                 <a-input v-model="form.perms" placeholder="请输入权限标识" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType == 'C'">
-              <a-form-item label="路由参数" field="query" tooltip='访问路由的默认传递参数，如：`{"id": 1, "name": "ry"}`'
-                label-col-flex="100px">
+            <a-col v-if="form.menuType == 'C'" :span="12">
+              <a-form-item
+                label="路由参数"
+                field="query"
+                tooltip='访问路由的默认传递参数，如：`{"id": 1, "name": "ry"}`'
+                label-col-flex="100px"
+              >
                 <a-input v-model="form.query" placeholder="请输入路由参数" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType == 'C'">
-              <a-form-item label="是否缓存" field="isCache" tooltip="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致"
-                label-col-flex="100px">
+            <a-col v-if="form.menuType == 'C'" :span="12">
+              <a-form-item
+                label="是否缓存"
+                field="isCache"
+                tooltip="选择是则会被`keep-alive`缓存，需要匹配组件的`name`和地址保持一致"
+                label-col-flex="100px"
+              >
                 <a-radio-group v-model="form.isCache">
                   <a-radio value="0">缓存</a-radio>
                   <a-radio value="1">不缓存</a-radio>
                 </a-radio-group>
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="form.menuType != 'F'">
-              <a-form-item label="显示状态" field="visible" tooltip="选择隐藏则路由将不会出现在侧边栏，但仍然可以访问" label-col-flex="100px">
+            <a-col v-if="form.menuType != 'F'" :span="12">
+              <a-form-item
+                label="显示状态"
+                field="visible"
+                tooltip="选择隐藏则路由将不会出现在侧边栏，但仍然可以访问"
+                label-col-flex="100px"
+              >
                 <a-radio-group v-model="form.visible">
                   <a-radio value="0">显示</a-radio>
                   <a-radio value="1">隐藏</a-radio>
@@ -175,7 +227,12 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="菜单状态" field="status" tooltip="选择停用则路由将不会出现在侧边栏，也不能被访问" label-col-flex="100px">
+              <a-form-item
+                label="菜单状态"
+                field="status"
+                tooltip="选择停用则路由将不会出现在侧边栏，也不能被访问"
+                label-col-flex="100px"
+              >
                 <a-radio-group v-model="form.status">
                   <a-radio value="0">正常</a-radio>
                   <a-radio value="1">停用</a-radio>
@@ -196,10 +253,11 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { handleTree } from '@/utils/utils'
 import iconSelect from '@/components/common/iconSelect/index.vue'
-import { Modal, Message } from '@arco-design/web-vue';
+import { Modal, Message } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
 
 const router = useRouter()
@@ -237,7 +295,7 @@ const rules = {
 /** 查询菜单下拉树结构 */
 function getTreeselect() {
   menuOptions.value = []
-  getRequest('/system/menu/list').then((response) => {
+  getRequest('/system/menu/list').then(response => {
     const menu = { menuId: 0, menuName: '主类目', children: [] }
     menu.children = handleTree(response.data, 'menuId')
     menuOptions.value.push(menu)
@@ -269,7 +327,7 @@ const reset = () => {
   proxy.$refs['menuRef'].resetFields()
 }
 // 新增
-const handleAdd = (record) => {
+const handleAdd = record => {
   reset()
   getTreeselect()
   if (record != null && record.menuId) {
@@ -289,14 +347,14 @@ const toggleExpandAll = () => {
   })
 }
 // 修改
-const handleUpdate = async (record) => {
+const handleUpdate = async record => {
   await getTreeselect()
   form.value = record
   open.value = true
   title.value = '修改菜单'
 }
 // 删除
-const handleDelete = (record) => {
+const handleDelete = record => {
   Modal.confirm({
     title: '系统提示',
     content: `是否确认删除名称为${record.menuName}的数据项?`,
@@ -311,7 +369,7 @@ const handleDelete = (record) => {
 }
 
 // 选择图标
-const selected = (name) => {
+const selected = name => {
   form.value.icon = name
 }
 
@@ -319,7 +377,7 @@ const selected = (name) => {
 const submitForm = () => {
   proxy.$refs['menuRef']
     .validate()
-    .then((res) => {
+    .then(res => {
       if (!res) {
         if (form.value.menuId != undefined) {
           // proxy.$http.updateMenu(form.value).then((res) => {
@@ -336,17 +394,17 @@ const submitForm = () => {
         }
       }
     })
-    .catch(() => { })
+    .catch(() => {})
 }
 
 const getList = () => {
   loading.value = true
-  getRequest('/system/menu/list',queryParams.value)
-    .then((response) => {
+  getRequest('/system/menu/list', queryParams.value)
+    .then(response => {
       menuList.value = handleTree(response.data, 'menuId')
       loading.value = false
     })
-    .catch((err) => {
+    .catch(err => {
       loading.value = false
     })
 }
@@ -354,6 +412,7 @@ onMounted(() => {
   getList()
 })
 </script>
+
 <style lang="less" scoped>
 .menu_search {
   width: 100%;
@@ -399,8 +458,8 @@ onMounted(() => {
     }
   }
 }
-:deep(.arco-input-prefix){
-  .i-icon{
+:deep(.arco-input-prefix) {
+  .i-icon {
     display: flex;
   }
 }

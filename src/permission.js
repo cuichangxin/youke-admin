@@ -2,18 +2,17 @@ import Cookies from 'js-cookie'
 import router from './router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { getToken } from './utils/auth';
+import { getToken } from './utils/auth'
 import { isHttp } from '@/utils/utils'
-import { Message } from '@arco-design/web-vue';
-import { useKeepAlive, useUserStore, usePermissionStore, useAppStore } from '@/store';
+import { Message } from '@arco-design/web-vue'
+import { useKeepAlive, useUserStore, usePermissionStore, useAppStore } from '@/store'
 import { setRouteEmitter } from '@/utils/route-listener'
 import useLoading from '@/hooks/useLoading'
 
 const LOADING = useLoading()
 
-NProgress.configure({ showSpinner: false });
-const whiteList = ['/login', '/404', '/401'];
-
+NProgress.configure({ showSpinner: false })
+const whiteList = ['/login', '/404', '/401']
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
@@ -39,22 +38,25 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       if (userStore.role.length === 0) {
-        userStore.info().then(() => {
-          usePermission.generateRoutes().then((accessRoutes) => {
-            accessRoutes.forEach(route => {
-              if (!isHttp(route.path)) {
-                router.addRoute(route) // 动态添加可访问路由表
-              }
+        userStore
+          .info()
+          .then(() => {
+            usePermission.generateRoutes().then(accessRoutes => {
+              accessRoutes.forEach(route => {
+                if (!isHttp(route.path)) {
+                  router.addRoute(route) // 动态添加可访问路由表
+                }
+              })
+              userStore.role = ['common'] // TODO: 临时
+              next({ ...to, replace: true })
             })
-            userStore.role = ['common'] // TODO: 临时
-            next({ ...to, replace: true })
           })
-        }).catch(err => {
-          userStore.logout().then(() => {
-            Message.error(err)
-            next({ path: '/' })
+          .catch(err => {
+            userStore.logout().then(() => {
+              Message.error(err)
+              next({ path: '/' })
+            })
           })
-        })
       } else {
         next()
       }

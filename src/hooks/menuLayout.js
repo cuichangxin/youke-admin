@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore, usePermissionStore } from '@/store'
 import layoutModeList from '@/config/menuLayout.json'
@@ -12,21 +12,21 @@ export function useMenuLayout() {
     get: () => appStore.layoutMode,
     set: val => {
       updateLayoutModel(val)
-    }
+    },
   })
   const selectKeys = computed({
     get: () => appStore.selectKeys,
     set: val => {
       updateSelectedKeys(val)
-    }
+    },
   })
   const navSelectKeys = computed({
     get: () => appStore.navSelectKeys,
     set: val => {
       updateNavSelectedKeys(val)
-    }
+    },
   })
-  const updateLayoutModel = (layoutModel) => {
+  const updateLayoutModel = layoutModel => {
     const findFix = layoutModeList.find(item => item.value === layoutModel)
     updateMenuPosition(findFix.menuPosition)
     updateNavbar(findFix.navbarShow)
@@ -34,33 +34,32 @@ export function useMenuLayout() {
     updateRouteList(layoutModel, route)
     appStore.updateLayoutMode(layoutModel)
   }
-  const updateMenuPosition = (menuPosition) => {
+  const updateMenuPosition = menuPosition => {
     appStore.updateMenuPosition(menuPosition)
   }
 
-  const updateNavbar = (value) => {
+  const updateNavbar = value => {
     appStore.updateNavbar(value)
   }
-  const updateSidebar = (value) => {
+  const updateSidebar = value => {
     appStore.updateSidebar(value)
   }
-  const updateSelectedKeys = (value) => {
+  const updateSelectedKeys = value => {
     appStore.updateSelectedKeys(value)
   }
-  const updateNavSelectedKeys = (value) => {
+  const updateNavSelectedKeys = value => {
     appStore.updateNavSelectedKeys(value)
   }
   const updateRouteList = async (value, route) => {
     if (value == 1) {
       if (route.matched[0].children.length <= 1) {
         appStore.updateSettings({
-          menu: false
+          menu: false,
         })
       } else {
         appStore.updateSettings({
-          menu: true
+          menu: true,
         })
-
       }
     }
     permissionStore.updateRouteList(value, route)
@@ -75,7 +74,7 @@ export function useMenuLayout() {
     updateNavbar,
     updateSidebar,
     updateSelectedKeys,
-    updateNavSelectedKeys
+    updateNavSelectedKeys,
   }
 }
 

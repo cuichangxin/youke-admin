@@ -1,6 +1,6 @@
 <template>
   <a-layout class="layout">
-    <div v-if="navbar" class="layout-navbar">
+    <div v-if="navbar && layoutMode != 5" class="layout-navbar">
       <Navbar />
     </div>
     <a-layout>
@@ -9,18 +9,40 @@
           v-if="renderMenu"
           v-show="!hideMenu"
           class="layout-sider"
-          :style="{ paddingTop: navbar ? '60px' : '' }"
+          :style="{ paddingTop: navbar && layoutMode != 5 ? '60px' : '' }"
           breakpoint="xl"
           :width="menuWidth"
           :collapsed="collapsed"
           :collapsible="true"
           :hide-trigger="true"
         >
-          <div class="menu-wrapper">
+          <div
+            v-if="layoutMode == 5"
+            class="left-side"
+            :style="{ background: menuColors === 'dark' ? 'var(--color-menu-dark-bg)' : 'var(--color-menu-light-bg)' }"
+          >
+            <a-space>
+              <img class="logo_img" alt="logo" src="/favicon.ico" />
+              <a-typography-title
+                v-if="!collapsed"
+                :style="{ margin: 0, fontSize: '18px', color: menuColors === 'dark' ? '#fff' : '#1d2129' }"
+                >youke-admin</a-typography-title
+              >
+            </a-space>
+          </div>
+          <div class="menu-wrapper" :style="{ height: layoutMode == 5 ? 'calc(100% - 60px)' : '100%' }">
             <Menu />
           </div>
         </a-layout-sider>
+
         <a-layout class="layout-content" :style="paddingStyle">
+          <div
+            v-if="navbar && layoutMode == 5"
+            class="layout-navbar layout-mode-5"
+            :style="{ width: `calc(100% - ${menuWidth}px)`, left: collapsed ? '48px' : '' }"
+          >
+            <Navbar />
+          </div>
           <TabBar v-if="appStore.tabBar" />
           <a-layout-content>
             <BreadCrumbs />
@@ -57,6 +79,7 @@ const paddingStyle = computed(() => {
   const paddingTop = navbar.value ? { paddingTop: `${60}px` } : {}
   return { ...paddingLeft, ...paddingTop }
 })
+const menuColors = computed(() => appStore.menuColors)
 
 onMounted(() => {
   if (theme.value === 'dark') {
@@ -83,9 +106,14 @@ onMounted(() => {
   position: fixed;
   top: 0;
   left: 0;
+  // left: 200px;
   z-index: 100;
   width: 100%;
   height: 60px;
+  transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+  &.layout-mode-5 {
+    left: 200px;
+  }
 }
 
 .layout-sider {
@@ -94,7 +122,7 @@ onMounted(() => {
   left: 0;
   z-index: 99;
   height: 100%;
-  transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+  transition: width 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
   &::after {
     position: absolute;
     top: 0;
@@ -108,6 +136,17 @@ onMounted(() => {
 
   > :deep(.arco-layout-sider-children) {
     overflow-y: hidden;
+  }
+  .left-side {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-menu-dark-bg);
+    height: 60px;
+    .arco-typography {
+      color: var(--color-bg-1);
+      font-size: 17px;
+    }
   }
 }
 
@@ -142,5 +181,9 @@ onMounted(() => {
 }
 .arco-layout-content {
   padding: 0 20px;
+}
+.logo_img {
+  width: 25px;
+  height: 25px;
 }
 </style>

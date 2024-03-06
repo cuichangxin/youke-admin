@@ -1,9 +1,8 @@
-import axios from "axios";
+import axios from 'axios'
 import { Modal, Message } from '@arco-design/web-vue'
-import { getToken, clearToken } from "@/utils/auth";
-import errorCode from "@/utils/errCode";
+import { getToken, clearToken } from '@/utils/auth'
+import errorCode from '@/utils/errCode'
 import router from '../router/index'
-
 
 // 请求记录栈
 // const requestStack = []
@@ -17,7 +16,7 @@ import router from '../router/index'
 
 /**
  * 请求记录入栈
-*/
+ */
 // function pushTarget() {
 //   if (!requestStack.length) {
 //     showLoading()
@@ -26,7 +25,7 @@ import router from '../router/index'
 // }
 /**
  * 请求记录出栈
-*/
+ */
 // function popTarget() {
 //   if (requestStack.length) {
 //     requestStack.pop()
@@ -40,7 +39,7 @@ import router from '../router/index'
 const Axios = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeoutL: 100000,
-  headers: { 'Content-Type': 'application/json;' }
+  headers: { 'Content-Type': 'application/json;' },
 })
 // 通用请求拦截器
 Axios.interceptors.request.use(
@@ -53,7 +52,7 @@ Axios.interceptors.request.use(
   },
   err => {
     return Promise.reject(err)
-  }
+  },
 )
 // 通用响应拦截器
 Axios.interceptors.response.use(
@@ -70,7 +69,7 @@ Axios.interceptors.response.use(
         onOk: () => {
           clearToken()
           router.replace({ path: '/login' })
-        }
+        },
       })
     } else if (code === 500) {
       Message.error(msg)
@@ -88,17 +87,17 @@ Axios.interceptors.response.use(
   error => {
     // popTarget()
     console.log('err' + error)
-    let { message } = error;
-    if (message == "Network Error") {
-      message = "后端接口连接异常";
-    } else if (message.includes("timeout")) {
-      message = "系统接口请求超时";
-    } else if (message.includes("Request failed with status code")) {
-      message = "系统接口" + message.substr(message.length - 3) + "异常";
+    let { message } = error
+    if (message == 'Network Error') {
+      message = '后端接口连接异常'
+    } else if (message.includes('timeout')) {
+      message = '系统接口请求超时'
+    } else if (message.includes('Request failed with status code')) {
+      message = '系统接口' + message.substr(message.length - 3) + '异常'
     }
     Message.error(message)
     return Promise.reject(error)
-  }
+  },
 )
 
 export default Axios

@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-const formatTag = (route) => {
+const formatTag = route => {
   const { name, meta, fullPath, query, path } = route
   if (route.path !== '/') {
     return {
@@ -8,7 +8,7 @@ const formatTag = (route) => {
       name: String(name),
       fullPath,
       query,
-      path
+      path,
     }
   }
 }
@@ -16,13 +16,13 @@ const formatTag = (route) => {
 const useTabStore = defineStore('tab', {
   state: () => {
     return {
-      multipage: []
+      multipage: [],
     }
   },
   getters: {
     getTabList() {
       return this.multipage
-    }
+    },
   },
   actions: {
     updateTabList(value) {
@@ -33,7 +33,7 @@ const useTabStore = defineStore('tab', {
     removeRouterTag(idx, tag) {
       this.multipage.splice(idx, 1)
     },
-    removeRouterTagFormPath(path){
+    removeRouterTagFormPath(path) {
       this.multipage = this.multipage.filter(item => item.path === path)
     },
     clearRouterTag() {
@@ -62,7 +62,7 @@ const useTabStore = defineStore('tab', {
         this.multipage.unshift(item)
       }
     },
-  }
+  },
 })
 
 export default useTabStore

@@ -1,7 +1,6 @@
 import { createVNode, render } from 'vue'
 import Loading from '@/components/common/loading/loading.vue'
 
-
 export default function useLoading(plugin, option) {
   // 创建虚拟节点
   const VNode = createVNode(Loading)
@@ -15,6 +14,6 @@ export default function useLoading(plugin, option) {
   }
   return {
     showLoading,
-    hideLoading
+    hideLoading,
   }
 }

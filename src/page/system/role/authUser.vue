@@ -2,7 +2,7 @@
   <div>
     <div class="role_search">
       <a-space>
-        <a-form :model="form" layout="inline" ref="formRef" @submit="search">
+        <a-form ref="formRef" :model="form" layout="inline" @submit="search">
           <a-form-item field="roleId" label="用户名称">
             <a-input v-model="form.roleId" />
           </a-form-item>
@@ -40,7 +40,7 @@
             <template #default>关闭</template>
           </a-button>
         </a-space>
-        <RightTool @refreshTable="getList()"></RightTool>
+        <RightTool @refresh-table="getList()"></RightTool>
       </div>
       <a-table
         class="role_table"
@@ -72,9 +72,10 @@
         </template>
       </a-table>
     </div>
-    <select-user ref="selectRef" :roleId="route.params.roleId" @ok="getList" />
+    <select-user ref="selectRef" :role-id="route.params.roleId" @ok="getList" />
   </div>
 </template>
+
 <script setup>
 import selectUser from './selectUser.vue'
 import RightTool from '@/components/common/rightTableTool/index.vue'
@@ -101,7 +102,7 @@ const cloneDeepTableData = ref([])
 const userIds = ref([])
 
 const queryParams = reactive({
-  total:0,
+  total: 0,
   pageNum: 1,
   pageSize: 10,
   roleId: route.params.roleId,
@@ -115,7 +116,7 @@ const queryParams = reactive({
 /** 查询授权用户列表 */
 const getList = () => {
   loading.value = true
-  getRequest('/system/role/authUser/allocatedList',queryParams).then((res) => {
+  getRequest('/system/role/authUser/allocatedList', queryParams).then(res => {
     queryParams.total = res.total
     userList.value = res.rows
     loading.value = false
@@ -132,7 +133,7 @@ const goBack = () => {
   router.go(-1)
 }
 // 取消授权操作
-const cancelAuthUser = (record) => {
+const cancelAuthUser = record => {
   $modal.confirm({
     title: '系统提示',
     content: `确认要取消该用户"${record.userName}"角色吗?`,
@@ -145,7 +146,7 @@ const cancelAuthUser = (record) => {
     },
   })
 }
-const tableSelect = (rowKeys) => {
+const tableSelect = rowKeys => {
   userIds.value = rowKeys
   if (rowKeys.length > 0) {
     removeFlag.value = false
@@ -178,6 +179,7 @@ onMounted(() => {
   getList()
 })
 </script>
+
 <style lang="less" scoped>
 .role_search {
   width: 100%;

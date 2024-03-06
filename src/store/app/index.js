@@ -1,7 +1,6 @@
-import { defineStore } from "pinia";
-import defaultSettings from '@/config/settings.json';
+import { defineStore } from 'pinia'
+import defaultSettings from '@/config/settings.json'
 import layoutModeList from '@/config/menuLayout.json'
-
 
 const arcoSetting = JSON.parse(localStorage.getItem('arco-setting'))
 
@@ -12,14 +11,14 @@ const useAppStore = defineStore('app', {
         ...defaultSettings,
         layoutMode: layoutModeList[3].value,
         menuPosition: 'sidebar',
-        selectKeys:'',
-        navSelectKeys:''
+        selectKeys: '',
+        navSelectKeys: '',
       }
     } else {
       return {
         ...arcoSetting,
-        selectKeys:'',
-        navSelectKeys:''
+        selectKeys: '',
+        navSelectKeys: '',
       }
     }
   },
@@ -28,9 +27,9 @@ const useAppStore = defineStore('app', {
     appCurrentSetting(state) {
       return { ...state }
     },
-    getMenuPosition(){
+    getMenuPosition() {
       return this.menuPosition
-    }
+    },
   },
   // 等待完善
   actions: {
@@ -39,15 +38,15 @@ const useAppStore = defineStore('app', {
     },
     toggleTheme(dark) {
       if (dark) {
-        this.theme = 'dark';
-        document.body.setAttribute('arco-theme', 'dark');
+        this.theme = 'dark'
+        document.body.setAttribute('arco-theme', 'dark')
       } else {
-        this.theme = 'light';
-        document.body.removeAttribute('arco-theme');
+        this.theme = 'light'
+        document.body.removeAttribute('arco-theme')
       }
     },
     updateSettings(partial) {
-      this.$patch(partial);
+      this.$patch(partial)
     },
     updateThemeColor(color) {
       this.themeColor = color
@@ -64,13 +63,13 @@ const useAppStore = defineStore('app', {
     updateSidebar(sidebarShow) {
       this.menu = sidebarShow
     },
-    updateSelectedKeys(selectedKeys){
+    updateSelectedKeys(selectedKeys) {
       this.selectKeys = selectedKeys
     },
-    updateNavSelectedKeys(selectedKeys){
+    updateNavSelectedKeys(selectedKeys) {
       this.navSelectKeys = selectedKeys
-    }
-  }
+    },
+  },
 })
 
 export default useAppStore

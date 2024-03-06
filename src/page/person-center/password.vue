@@ -1,6 +1,12 @@
 <template>
-  <a-form ref="formRef" :model="formData" :rules="rules" class="form" :label-col-props="{ span: 5 }"
-    :wrapper-col-props="{ span: 16 }">
+  <a-form
+    ref="formRef"
+    :model="formData"
+    :rules="rules"
+    class="form"
+    :label-col-props="{ span: 5 }"
+    :wrapper-col-props="{ span: 16 }"
+  >
     <a-form-item field="oldPwd" label="旧密码">
       <a-input-password v-model="formData.oldPwd" />
     </a-form-item>
@@ -18,9 +24,10 @@
     </a-form-item>
   </a-form>
 </template>
+
 <script setup>
-import { updateUserPwd } from "@/api/user";
-import { Message } from "@arco-design/web-vue";
+import { updateUserPwd } from '@/api/user'
+import { Message } from '@arco-design/web-vue'
 
 const formData = ref({
   oldPwd: '',
@@ -41,7 +48,7 @@ const rules = {
       required: true,
       message: '新密码不能为空',
     },
-    { min: 6, max: 20, message: "长度在 6 到 20 个字符" }
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符' },
   ],
   confirmPwd: [
     {
@@ -64,7 +71,7 @@ const validate = async () => {
   const res = await formRef.value?.validate()
   if (!res) {
     updateUserPwd(user.oldPassword, user.newPassword).then(response => {
-      Message.success("修改成功");
+      Message.success('修改成功')
     })
   }
 }
@@ -72,6 +79,7 @@ const reset = async () => {
   await formRef.value?.resetFields()
 }
 </script>
+
 <style lang="less" scoped>
 .form {
   width: 540px;

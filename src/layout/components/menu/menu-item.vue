@@ -1,7 +1,6 @@
 <template>
   <template v-if="!item.hidden">
-    <template
-      v-if="!item.children && !item.alwaysShow">
+    <template v-if="!item.children && !item.alwaysShow">
       <a-menu-item :key="item.path">
         <template #icon>
           <Icon :icon="item.meta.icon" size="19" />
@@ -19,8 +18,9 @@
     </a-sub-menu>
   </template>
 </template>
+
 <script setup name="menuItem">
-const props = defineProps({
+defineProps({
   item: {
     type: Object,
     required: true,

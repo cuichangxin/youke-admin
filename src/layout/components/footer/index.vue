@@ -1,5 +1,5 @@
 <template>
-  <a-layout-footer class="footer">youke-admin-template</a-layout-footer>
+  <a-layout-footer class="footer">youke-admin</a-layout-footer>
 </template>
 
 <script setup></script>

@@ -1,10 +1,15 @@
 <template>
   <a-dropdown trigger="contextMenu" :popup-max-height="false" @select="actionSelect">
-    <span class="arco-tag arco-tag-size-medium arco-tag-checked"
-      :class="{ 'link-activated': itemData.path === routePath }" @click="goto(itemData)">
+    <span
+      class="arco-tag arco-tag-size-medium arco-tag-checked"
+      :class="{ 'link-activated': itemData.path === routePath }"
+      @click="goto(itemData)"
+    >
       <span class="tag-link"> {{ itemData.title }} </span>
-      <span class="arco-icon-hover arco-tag-icon-hover arco-icon-hover-size-medium arco-tag-close-btn"
-        @click.stop="tagClose(itemData, index)">
+      <span
+        class="arco-icon-hover arco-tag-icon-hover arco-icon-hover-size-medium arco-tag-close-btn"
+        @click.stop="tagClose(itemData, index)"
+      >
         <Icon :icon="'close'" />
       </span>
     </span>
@@ -49,7 +54,7 @@ const props = defineProps({
   },
   parentRoutePath: {
     type: String,
-  }
+  },
 })
 const Eaction = {
   reload: 'reload',
@@ -62,7 +67,7 @@ const router = useRouter()
 const route = useRoute()
 const tabBarStore = useTabStore()
 
-const goto = (tag) => {
+const goto = tag => {
   router.push({ name: tag.name })
 }
 const tagList = computed(() => {
@@ -73,8 +78,8 @@ const disabledCurrent = computed(() => {
   return props.index === 0
 })
 const disabledReload = computed(() => {
-  let pathSplit = route.path.split('/'),
-    path = pathSplit[pathSplit.length - 1]
+  const pathSplit = route.path.split('/')
+  const path = pathSplit[pathSplit.length - 1]
   return props.itemData.path !== path
 })
 
@@ -86,7 +91,7 @@ const tagClose = (tag, idx) => {
   }
 }
 
-const actionSelect = async (value) => {
+const actionSelect = async value => {
   const { itemData, index } = props
   if (value === Eaction.current) {
     tagClose(itemData, index)
@@ -118,7 +123,7 @@ const actionSelect = async (value) => {
     color: rgb(var(--link-6));
   }
 
-  &+.arco-tag-close-btn {
+  & + .arco-tag-close-btn {
     color: rgb(var(--link-6));
   }
 }

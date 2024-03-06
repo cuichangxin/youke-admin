@@ -1,0 +1,6 @@
+/*.json
+/*.js
+dist
+.eslintrc.js
+.prettierrc.js
+/node_modules/

@@ -10,7 +10,7 @@ const getToken = () => {
   return Cookies.get(TOKEN_KEY)
 }
 
-const setToken = (token) => {
+const setToken = token => {
   return Cookies.set(TOKEN_KEY, token)
 }
 

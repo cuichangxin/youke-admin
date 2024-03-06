@@ -18,6 +18,7 @@
     <menuSub v-for="child in menuItem.children" :key="child.path" :menu-item="child" />
   </a-sub-menu>
 </template>
+
 <script setup name="menuSub">
 const props = defineProps({
   menuItem: {
@@ -26,6 +27,7 @@ const props = defineProps({
   },
 })
 </script>
+
 <style lang="less" scoped>
 .arco-menu-item {
   display: flex;
@@ -38,7 +40,6 @@ const props = defineProps({
 }
 
 :deep(.active-menu-selected) {
-
   .arco-menu-title,
   .arco-menu-icon {
     color: rgb(var(--primary-6)) !important;
@@ -53,4 +54,5 @@ const props = defineProps({
     height: 3px;
     background-color: rgb(var(--primary-6));
   }
-}</style>
+}
+</style>

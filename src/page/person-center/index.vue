@@ -1,8 +1,14 @@
 <template>
   <div class="user-center">
     <div class="my-card">
-      <a-upload :custom-request="customRequest" list-type="picture-card" :file-list="fileList" :show-upload-button="true"
-        :show-file-list="false" @change="uploadChange">
+      <a-upload
+        :custom-request="customRequest"
+        list-type="picture-card"
+        :file-list="fileList"
+        :show-upload-button="true"
+        :show-file-list="false"
+        @change="uploadChange"
+      >
         <template #upload-button>
           <a-avatar :size="90" class="info-avatar">
             <template #trigger-icon>
@@ -12,8 +18,7 @@
           </a-avatar>
         </template>
       </a-upload>
-      <a-descriptions class="descriptions" :column="1"
-        :label-style="{ color: 'rgb(var(--gray-8))', }">
+      <a-descriptions class="descriptions" :column="1" :label-style="{ color: 'rgb(var(--gray-8))' }">
         <a-descriptions-item label="用户昵称">
           {{ renderData.user.nickName }}
         </a-descriptions-item>
@@ -26,7 +31,7 @@
         <a-descriptions-item label="用户邮箱">
           {{ renderData.user.email }}
         </a-descriptions-item>
-        <a-descriptions-item label="所属部门" v-if="renderData.user.dept">
+        <a-descriptions-item v-if="renderData.user.dept" label="所属部门">
           {{ renderData.user.dept.deptName }} / {{ renderData.postGroup }}
         </a-descriptions-item>
         <a-descriptions-item label="所属角色">
@@ -51,6 +56,7 @@
     </a-row>
   </div>
 </template>
+
 <script setup>
 import { useUserStore } from '@/store'
 import BasicInformation from './information.vue'
@@ -74,36 +80,36 @@ const fileList = ref([file])
 const uploadChange = (fileItemList, fileItem) => {
   fileList.value = [fileItem]
 }
-const customRequest = (options) => {
+const customRequest = options => {
   // docs: https://axios-http.com/docs/cancellation
   const controller = new AbortController()
 
-    ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name, fileItem.file)
-      const onUploadProgress = (event) => {
-        let percent
-        if (event.total > 0) {
-          percent = (event.loaded / event.total) * 100
-        }
-        onProgress(parseInt(String(percent), 10), event)
+  ;(async function requestWrap() {
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name, fileItem.file)
+    const onUploadProgress = event => {
+      let percent
+      if (event.total > 0) {
+        percent = (event.loaded / event.total) * 100
       }
+      onProgress(parseInt(String(percent), 10), event)
+    }
 
-      try {
-        // https://github.com/axios/axios/issues/1630
-        // https://github.com/nuysoft/Mock/issues/127
+    try {
+      // https://github.com/axios/axios/issues/1630
+      // https://github.com/nuysoft/Mock/issues/127
 
-        const res = await proxy.$http.userUploadApi(formData, {
-          controller,
-          onUploadProgress,
-        })
-        onSuccess(res)
-      } catch (error) {
-        onError(error)
-      }
-    })()
+      const res = await proxy.$http.userUploadApi(formData, {
+        controller,
+        onUploadProgress,
+      })
+      onSuccess(res)
+    } catch (error) {
+      onError(error)
+    }
+  })()
   return {
     abort() {
       controller.abort()
@@ -112,7 +118,7 @@ const customRequest = (options) => {
 }
 
 function getUser() {
-  getUserProfile().then((response) => {
+  getUserProfile().then(response => {
     renderData.user = response.data
     renderData.roleGroup = response.roleGroup
     renderData.postGroup = response.postGroup
@@ -120,6 +126,7 @@ function getUser() {
 }
 getUser()
 </script>
+
 <style lang="less" scoped>
 .user-center {
   display: flex;

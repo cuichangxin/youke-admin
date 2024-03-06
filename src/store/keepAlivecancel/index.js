@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 const useKeepAlive = defineStore('keepAlive', {
   state: () => {
     return {
-      caches: []
+      caches: [],
     }
   },
   actions: {
@@ -13,12 +13,14 @@ const useKeepAlive = defineStore('keepAlive', {
       }
     },
     removeKeepAlive(name) {
-      this.caches = this.caches.filter((item) => { item !== name })
+      this.caches = this.caches.filter(item => {
+        item !== name
+      })
     },
     clearKeepAlive() {
       this.caches = []
-    }
-  }
+    },
+  },
 })
 
 export default useKeepAlive

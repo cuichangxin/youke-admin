@@ -11,8 +11,8 @@
     <div class="navbar-search-wrapper">
       <div class="navbar-search-input">
         <div class="navbar-search-input-left">
-          <Icon  :icon="'search'" class="search-icon"  />
-          <input type="text" placeholder="Search" ref="inputRef" @input="onChange" />
+          <Icon :icon="'search'" class="search-icon" />
+          <input ref="inputRef" type="text" placeholder="Search" @input="onChange" />
         </div>
         <div class="navbar-search-input-right">
           <div class="navbar-search-input-key-word">退出</div>
@@ -25,7 +25,7 @@
             <div class="navbar-search-content-item" @click="clickItem(route)">
               <div class="item-title">
                 <Icon class="navbar-search-content-icon" :icon="route.item.icon" />
-                <span v-bind:innerHTML="route.item.title.join(' > ')"></span>
+                <span :innerHTML="route.item.title.join(' > ')"></span>
               </div>
               <Icon class="navbar-search-content-icon corner" :icon="'corner-down-left'" />
             </div>
@@ -36,6 +36,7 @@
     </div>
   </a-modal>
 </template>
+
 <script setup>
 import Icon from '@/components/common/icon/index.vue'
 import { usePermissionStore } from '@/store'
@@ -72,8 +73,14 @@ const onChange = () => {
     const regExp = new RegExp(inputRef.value.value, 'g')
     // cloneDeep 为了阻止v-html更新层层嵌套的问题
     searchList.value = cloneDeep(fuse.value.search(inputRef.value.value))
-    searchList.value.forEach((item) => {
-      item.item.title = item.item.title.join(',').replace(regExp, `<mark class="mark" style="background:none;color: rgb(var(--primary-6));">${inputRef.value.value}</mark>`).split(',')
+    searchList.value.forEach(item => {
+      item.item.title = item.item.title
+        .join(',')
+        .replace(
+          regExp,
+          `<mark class="mark" style="background:none;color: rgb(var(--primary-6));">${inputRef.value.value}</mark>`,
+        )
+        .split(',')
     })
     if (inputRef.value.value !== '' && searchList.value.length <= 0) {
       empty.value = true
@@ -82,7 +89,7 @@ const onChange = () => {
     }
   }, 500)
 }
-const clickItem = (route) => {
+const clickItem = route => {
   if (isHttp(route.item.path)) {
     window.open(route.item.path, '_blank')
   } else {
@@ -145,7 +152,7 @@ defineExpose({ showModal, hideModal })
 watchEffect(() => {
   searchPool.value = generateRoutes(routes.value)
 })
-watch(searchPool, (list) => {
+watch(searchPool, list => {
   initFuse(list)
 })
 
@@ -153,6 +160,7 @@ onMounted(() => {
   searchPool.value = generateRoutes(routes.value)
 })
 </script>
+
 <style lang="less" scoped>
 .navbar-search-wrapper {
   font-size: 14px;
@@ -244,7 +252,7 @@ body[arco-theme='dark'] .navbar-search-content-item {
         opacity: 1;
       }
     }
-    .mark{
+    .mark {
       color: #fff !important;
     }
   }

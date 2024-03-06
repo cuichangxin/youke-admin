@@ -2,11 +2,11 @@
  * Listening to routes alone would waste rendering performance. Use the publish-subscribe model for distribution management
  * 单独监听路由会浪费渲染性能。使用发布订阅模式去进行分发管理。
  */
-import mitt from "mitt"
+import mitt from 'mitt'
 
 const emitter = mitt()
 
-const key = Symbol("ROUTE_CHANGE")
+const key = Symbol('ROUTE_CHANGE')
 
 let latestRoute
 

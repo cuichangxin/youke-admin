@@ -1,6 +1,6 @@
 <template>
   <transition-group name="breadcrumb">
-    <a-breadcrumb class="container-breadcrumb" :key="$route.path">
+    <a-breadcrumb :key="$route.path" class="container-breadcrumb">
       <a-breadcrumb-item>
         <Icon :icon="'all-application'" />
       </a-breadcrumb-item>
@@ -12,27 +12,19 @@
 </template>
 
 <script setup>
-import router from '../../../router'
-
 const route = useRoute()
+const router = useRouter()
 const levelList = ref(null)
 
 function getBreadCrumb() {
-  let matched = route.matched.filter((item) => item.meta && item.meta.title)
-  levelList.value = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-}
-function isDashBroad(route) {
-  const name = route && route.name
-  if (!name) {
-    return false
-  }
-  return name.trim().toLocaleLowerCase() === 'index'.toLocaleLowerCase()
+  const matched = route.matched.filter(item => item.meta && item.meta.title)
+  levelList.value = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
 }
 watch(
   () => router.currentRoute.value,
   () => {
     getBreadCrumb()
-  }
+  },
 )
 
 onMounted(() => {
@@ -51,7 +43,7 @@ onMounted(() => {
     }
   }
 }
-.i-icon{
+.i-icon {
   display: flex;
 }
 </style>

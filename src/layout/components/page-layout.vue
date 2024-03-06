@@ -14,7 +14,7 @@ const { caches } = toRefs(useKeepAlive())
 </script>
 
 <style lang="less" scoped>
-.page_info{
+.page_info {
   height: calc(100% - 60px);
 }
 </style>

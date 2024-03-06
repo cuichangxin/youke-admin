@@ -35,7 +35,7 @@ export const constantRoutes = [
         component: () => import('@/page/index.vue'),
         meta: { title: '首页', icon: 'workbench' },
       },
-    ]
+    ],
   },
   {
     path: '/user',
@@ -46,20 +46,20 @@ export const constantRoutes = [
         path: '/user/mycenter',
         component: () => import('@/page/person-center/index.vue'),
         name: 'MyCenter',
-        meta: { title: '个人中心', icon: 'people', },
-      }
-    ]
+        meta: { title: '个人中心', icon: 'people' },
+      },
+    ],
   },
   {
-    path:'/redirect',
-    component:Layout,
+    path: '/redirect',
+    component: Layout,
     hidden: true,
-    children:[
+    children: [
       {
-        path:'/redirect/:path(.*)',
-        component:() => import('@/page/redirect/index.vue')
-      }
-    ]
+        path: '/redirect/:path(.*)',
+        component: () => import('@/page/redirect/index.vue'),
+      },
+    ],
   },
   {
     path: '/login',
@@ -72,10 +72,10 @@ export const constantRoutes = [
     component: () => import('@/page/401.vue'),
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: '/:pathMatch(.*)*',
     component: () => import('@/page/404.vue'),
-    hidden: true
-  }
+    hidden: true,
+  },
 ]
 
 // 权限路由
@@ -90,9 +90,9 @@ export const dynamicRoutes = [
         path: 'role/:userId(\\d+)',
         component: () => import('@/page/system/user/authRole'),
         name: 'AuthRole',
-        meta: { title: '分配角色' }
-      }
-    ]
+        meta: { title: '分配角色' },
+      },
+    ],
   },
   {
     path: '/system/role-auth',
@@ -104,16 +104,15 @@ export const dynamicRoutes = [
         path: 'user/:roleId(\\d+)',
         component: () => import('@/page/system/role/authUser'),
         name: 'AuthUser',
-        meta: { title: '分配用户' }
-      }
-    ]
+        meta: { title: '分配用户' },
+      },
+    ],
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: constantRoutes
+  routes: constantRoutes,
 })
-
 
 export default router

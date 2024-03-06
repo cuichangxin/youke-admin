@@ -2,19 +2,25 @@
   <div class="icon_info">
     <a-input v-model="iconName" allow-clear placeholder="请输入图标名称" @clear="filterIcons" @input="filterIcons">
       <template #suffix>
-        <Icon  :icon="'search'" />
+        <Icon :icon="'search'" />
       </template>
     </a-input>
   </div>
   <div class="icon_list">
-    <div class="icon_wrapper" v-for="item in iconList.slice((current-1) * pageSize,current*pageSize)" :key="item.name" @click="selectedIcon(item.name)">
+    <div
+      v-for="item in iconList.slice((current - 1) * pageSize, current * pageSize)"
+      :key="item.name"
+      class="icon_wrapper"
+      @click="selectedIcon(item.name)"
+    >
       <div :class="['icon_item', { active: activeIcon === item.name }]" :title="item.name">
         <Icon :icon="item.name" />
       </div>
     </div>
-    <a-pagination :total="iconList.length" v-model:current="current" v-model:page-size="pageSize" simple/>
+    <a-pagination v-model:current="current" v-model:page-size="pageSize" :total="iconList.length" simple />
   </div>
 </template>
+
 <script setup>
 import icons from '@/config/icons.json'
 
@@ -31,12 +37,12 @@ const iconName = ref('')
 const current = ref(1)
 const pageSize = ref(24)
 
-const selectedIcon = (name) => {
+const selectedIcon = name => {
   emit('selected', name)
 }
 const filterIcons = () => {
   if (iconName.value) {
-    iconList.value = cloneIconList.value.filter((item) => item.indexOf(iconName.value) !== -1)
+    iconList.value = cloneIconList.value.filter(item => item.indexOf(iconName.value) !== -1)
   } else {
     iconList.value = cloneIconList.value
   }
@@ -52,6 +58,7 @@ onMounted(() => {
   cloneIconList.value = iconList.value
 })
 </script>
+
 <style lang="less" scoped>
 .icon_info {
   width: 100%;
@@ -69,7 +76,7 @@ onMounted(() => {
       align-items: center;
       padding: 8px;
       border: 1px solid var(--color-border);
-      .i-icon{
+      .i-icon {
         display: flex;
       }
       &:hover {
@@ -81,7 +88,7 @@ onMounted(() => {
     }
   }
 }
-.arco-pagination{
+.arco-pagination {
   flex: 1;
   justify-content: center;
   margin-top: 10px;

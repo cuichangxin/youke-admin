@@ -2,8 +2,8 @@
   <div class="block">
     <h5 class="title">{{ title }}</h5>
     <div v-for="option in options" :key="option.name" class="switch-wrapper">
-      <div style="display: flex;">
-        <span style="margin-right: 4px;">{{ option.name }}</span>
+      <div style="display: flex">
+        <span style="margin-right: 4px">{{ option.name }}</span>
         <a-tooltip v-if="option.tooltip" :content="option.content">
           <Icon :icon="'help'" />
         </a-tooltip>
@@ -71,5 +71,6 @@ const handleChange = async ({ key, value }) => {
   align-items: center;
   justify-content: space-between;
   height: 32px;
+  margin: 4px 0;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <!-- 授权用户 -->
-  <a-modal title="选择用户" v-model:visible="visible" width="800px">
-    <a-form :model="queryParams" ref="queryRef" layout="inline">
+  <a-modal v-model:visible="visible" title="选择用户" width="800px">
+    <a-form ref="queryRef" :model="queryParams" layout="inline">
       <a-form-item label="用户名称" field="userName">
         <a-input
           v-model="queryParams.userName"
@@ -33,7 +33,7 @@
       :data="userList"
       :bordered="false"
       :row-selection="rowSelection"
-      :scroll="{x:0,y:'120%',minWidth:0,maxHeight:'260px'}"
+      :scroll="{ x: 0, y: '120%', minWidth: 0, maxHeight: '260px' }"
       @select="handleSelectionChange"
     >
       <template #columns>
@@ -62,7 +62,7 @@
 </template>
 
 <script setup name="SelectUser">
-import { Message } from '@arco-design/web-vue';
+import { Message } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
 
 const props = defineProps({
@@ -93,7 +93,7 @@ const rowSelection = reactive({
 // 显示弹框
 function show() {
   queryParams.roleId = props.roleId
-    getList()
+  getList()
   visible.value = true
 }
 // 多选框选中数据
@@ -102,7 +102,7 @@ function handleSelectionChange(selection) {
 }
 // 查询表数据
 function getList() {
-  getRequest('/system/role/authUser/unallocatedList',queryParams).then((res) => {
+  getRequest('/system/role/authUser/unallocatedList', queryParams).then(res => {
     userList.value = res.rows
     total.value = res.total
   })
@@ -129,8 +129,8 @@ function handleSelectUser() {
   // proxy.$http.authUserSelectAll({ roleId: roleId, userIds: uIds }).then((res) => {
   //   Message.success(res.msg)
   //   if (res.code === 200) {
-      visible.value = false
-      emit('ok')
+  visible.value = false
+  emit('ok')
   //   }
   // })
 }

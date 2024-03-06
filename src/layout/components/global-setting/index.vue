@@ -20,13 +20,13 @@
       <h5 class="title">主题色</h5>
       <div class="theme-info">
         <color-picker
-          pickerType="chrome"
-          format="hex"
-          :disableAlpha="true"
-          :theme="theme"
           v-model:pureColor="pureColor"
           v-model:gradientColor="gradientColor"
-          @pureColorChange="pureColorChange"
+          picker-type="chrome"
+          format="hex"
+          :disable-alpha="true"
+          :theme="theme"
+          @pure-color-change="pureColorChange"
         />
         <span>{{ pureColor }}</span>
       </div>
@@ -77,12 +77,18 @@ const contentOpts = computed(() => [
   },
   { name: '底部', key: 'footer', defaultVal: appStore.footer },
   { name: '多页签', key: 'tabBar', defaultVal: appStore.tabBar },
-  { name: '全局加载', key: 'loading', defaultVal: appStore.loading,tooltip:true,content:'进入页面loading效果' },
+  { name: '全局加载', key: 'loading', defaultVal: appStore.loading, tooltip: true, content: '进入页面loading效果' },
   {
     name: '菜单宽度',
     key: 'menuWidth',
     defaultVal: appStore.menuWidth,
     type: 'number',
+  },
+  {
+    name: '菜单配色',
+    key: 'menuColors',
+    defaultVal: appStore.menuColors,
+    type: 'radioGroup',
   },
 ])
 const theme = computed(() => {
@@ -106,7 +112,7 @@ const othersOpts = computed(() => [
 const pureColor = ref(appStore.themeColor)
 const gradientColor = ref('linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%)')
 
-const pureColorChange = (color) => {
+const pureColorChange = color => {
   sysColor.value = color
 }
 const cancel = () => {
@@ -129,7 +135,7 @@ const saveSettings = async () => {
 const setVisible = () => {
   appStore.updateSettings({ globalSettings: true })
 }
-const changeMode = (value) => {
+const changeMode = value => {
   if (layoutMode.value !== value) {
     layoutMode.value = value
   }
@@ -150,25 +156,31 @@ onMounted(() => {
     vertical-align: -4px;
   }
 }
+
 .theme-box {
   margin-bottom: 20px;
 }
+
 .theme-info {
   display: flex;
   border: 1px solid var(--color-border);
   padding: 4px;
 }
+
 .title {
   margin: 10px 0;
   padding: 0;
   font-size: 14px;
 }
+
 :deep(.vc-color-wrap) {
   width: 80px !important;
 }
+
 .layout-wrapper {
   display: flex;
   justify-content: space-around;
+
   .chose-item {
     position: relative;
     width: 45px;
@@ -178,6 +190,7 @@ onMounted(() => {
     background-color: #f0f2f5;
     border-radius: 4px;
     box-shadow: 0 1px 2.5px #0000002e;
+
     &::before {
       content: '';
       position: absolute;
@@ -187,6 +200,7 @@ onMounted(() => {
       color: #fff;
       font-size: 10px;
     }
+
     &::after {
       content: '';
       position: absolute;
@@ -196,9 +210,11 @@ onMounted(() => {
       color: #fff;
       font-size: 10px;
     }
+
     &.active {
       border: 2px solid rgb(var(--primary-7));
     }
+
     &.mode_1 {
       &::before {
         content: '';
@@ -209,6 +225,7 @@ onMounted(() => {
         height: 100%;
         background-color: rgb(var(--primary-6));
       }
+
       &::after {
         content: '';
         top: 0;
@@ -219,6 +236,7 @@ onMounted(() => {
         background-color: rgb(var(--primary-6));
       }
     }
+
     &.mode_2 {
       &::before {
         content: '';
@@ -230,6 +248,7 @@ onMounted(() => {
         background-color: rgb(var(--primary-6));
       }
     }
+
     &.mode_3 {
       &::before {
         content: '';
@@ -241,7 +260,28 @@ onMounted(() => {
         background-color: rgb(var(--primary-6));
       }
     }
+
     &.mode_4 {
+      &::before {
+        content: '';
+        top: 0;
+        left: 0;
+        width: 30%;
+        height: 100%;
+        background-color: rgb(var(--primary-6));
+      }
+
+      &::after {
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 27%;
+        z-index: 1;
+        background-color: #c8c8c8;
+      }
+    }
+    &.mode_5 {
       &::before {
         content: '';
         top: 0;
@@ -251,13 +291,14 @@ onMounted(() => {
         height: 100%;
         background-color: rgb(var(--primary-6));
       }
+
       &::after {
         content: '';
         top: 0;
         left: 0;
         width: 100%;
         height: 27%;
-        background-color: #fff;
+        background-color: #c8c8c8;
       }
     }
   }
