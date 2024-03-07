@@ -13,5 +13,5 @@
   "globalSettings": false,
   "tabBar": false,
   "loading": true,
-  "menuColors":"dark"
+  "menuColors":"light"
 }

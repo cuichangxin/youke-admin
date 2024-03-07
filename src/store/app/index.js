@@ -9,7 +9,7 @@ const useAppStore = defineStore('app', {
     if (!arcoSetting) {
       return {
         ...defaultSettings,
-        layoutMode: layoutModeList[3].value,
+        layoutMode: layoutModeList[4].value,
         menuPosition: 'sidebar',
         selectKeys: '',
         navSelectKeys: '',
