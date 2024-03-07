@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { updateUserPwd } from '@/api/user'
+// import { updateUserPwd } from '@/api/user'
 import { Message } from '@arco-design/web-vue'
 import { ref } from 'vue'
 
@@ -71,9 +71,9 @@ const rules = {
 const validate = async () => {
   const res = await formRef.value?.validate()
   if (!res) {
-    updateUserPwd(user.oldPassword, user.newPassword).then(response => {
-      Message.success('修改成功')
-    })
+    // updateUserPwd(user.oldPassword, user.newPassword).then(response => {
+    //   Message.success('修改成功')
+    // })
   }
 }
 const reset = async () => {

@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { updateUserProfile } from '@/api/user'
+// import { updateUserProfile } from '@/api/user'
 import { Message } from '@arco-design/web-vue'
 import { watch, ref } from 'vue'
 
@@ -66,13 +66,13 @@ const rules = {
 const validate = async () => {
   const res = await formRef.value?.validate()
   if (!res) {
-    updateUserProfile().then(res => {
-      Message.success('修改成功')
-      // eslint-disable-next-line vue/no-mutating-props
-      props.user.phonenumber = form.value.phonenumber
-      // eslint-disable-next-line vue/no-mutating-props
-      props.user.email = form.value.email
-    })
+    // updateUserProfile().then(res => {
+    //   Message.success('修改成功')
+    //   // eslint-disable-next-line vue/no-mutating-props
+    //   props.user.phonenumber = form.value.phonenumber
+    //   // eslint-disable-next-line vue/no-mutating-props
+    //   props.user.email = form.value.email
+    // })
   }
 }
 const reset = async () => {

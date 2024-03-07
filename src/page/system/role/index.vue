@@ -185,7 +185,7 @@
 import { addDateRange } from '@/utils/utils'
 import { Message, Modal } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

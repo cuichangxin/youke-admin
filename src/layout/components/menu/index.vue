@@ -18,8 +18,8 @@ import { useAppStore, useTabStore, usePermissionStore } from '@/store'
 import { listenerRouteChange } from '@/utils/route-listener'
 import { isHttp } from '@/utils/utils'
 import useMenuLayout from '@/hooks/menuLayout'
-import { computed, ref } from 'vue'
-import { useRouter, useRoute, onMounted, watch } from 'vue-router'
+import { computed, ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const permissionStore = usePermissionStore()
 const appStore = useAppStore()

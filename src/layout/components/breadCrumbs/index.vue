@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { watch, ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()

@@ -80,7 +80,7 @@
 import selectUser from './selectUser.vue'
 import RightTool from '@/components/common/rightTableTool/index.vue'
 import { getRequest } from '@/api/mock_request'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()

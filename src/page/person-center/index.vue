@@ -61,8 +61,8 @@
 import { useUserStore } from '@/store'
 import BasicInformation from './information.vue'
 import Password from './password.vue'
-import { getUserProfile } from '@/api/mock'
-import { reactive, ref } from 'vue'
+import { getRequest } from '@/api/mock_request'
+import { reactive, ref, getCurrentInstance } from 'vue'
 
 const { proxy } = getCurrentInstance()
 const userStore = useUserStore()
@@ -119,7 +119,7 @@ const customRequest = options => {
 }
 
 function getUser() {
-  getUserProfile().then(response => {
+  getRequest('/system/user/profile').then(response => {
     renderData.user = response.data
     renderData.roleGroup = response.roleGroup
     renderData.postGroup = response.postGroup
