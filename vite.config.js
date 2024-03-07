@@ -10,12 +10,8 @@ export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV, VITE_APP_BASE_URL, VITE_APP_BASE_API } = env
   return {
-    /**
-     * 部署生产环境和开发环境下的URL。
-     * 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
-     * 如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://xxx/admin/，则设置 baseUrl 为 /admin/。
-     */
-    base: VITE_APP_ENV === 'production' ? '/' : '/',
+    base: '/youke-admin/',
+    outDir: `docs`,
     plugins: [
       vue(),
       createSvgIconsPlugin({
@@ -27,7 +23,8 @@ export default defineConfig(({ mode, command }) => {
       viteMockServe({
         mockPath: './mock', // mock文件所在文件夹
         localEnabled: true, // 是否应用于本地
-        prodEnabled: false, // 是否应用于生产
+        prodEnabled: true, // 是否应用于生产
+        injectCode: `import { setupProdMockServer } from '/mock/mockProdServer'; setupProdMockServer();`,
         watchFiles: true, // 监视文件更改 这样更改mock的时候，不需要重新启动编译
       }),
       VueSetupExtend(),
