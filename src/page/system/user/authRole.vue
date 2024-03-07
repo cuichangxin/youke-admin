@@ -45,6 +45,8 @@
 import { useTabStore } from '@/store'
 import { Message } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
+import { reactive, ref, getCurrentInstance, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const tabStore = useTabStore()
 const router = useRouter()

@@ -37,6 +37,8 @@
 <script setup>
 import { useTabStore } from '@/store'
 import { refreshPage } from '@/utils/utils'
+import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue'
 
 const props = defineProps({
   itemData: {

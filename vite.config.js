@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import AutoImport from 'unplugin-auto-import/vite'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
@@ -19,13 +18,6 @@ export default defineConfig(({ mode, command }) => {
     base: VITE_APP_ENV === 'production' ? '/' : '/',
     plugins: [
       vue(),
-      AutoImport({
-        includes: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-        imports: ['vue', 'vue-router', 'pinia'],
-        eslintrc: {
-          enabled: true,
-        },
-      }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')],

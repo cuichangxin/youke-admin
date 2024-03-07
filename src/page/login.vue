@@ -77,6 +77,8 @@ import { useUserStore } from '@/store'
 import { Message } from '@arco-design/web-vue'
 import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const userStore = useUserStore()

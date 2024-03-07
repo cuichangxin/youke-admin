@@ -270,6 +270,8 @@
 import { addDateRange } from '@/utils/utils'
 import { Message, Modal } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
+import { reactive, ref, getCurrentInstance, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()
@@ -389,7 +391,7 @@ const handleUpdate = row => {
     form.value.roleIds = response.roleIds
     open.value = true
     title.value = '修改用户'
-    form.password = ''
+    form.value.password = ''
   })
 }
 /** 删除按钮操作 */

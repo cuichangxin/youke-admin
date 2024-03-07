@@ -259,6 +259,8 @@ import { handleTree } from '@/utils/utils'
 import iconSelect from '@/components/common/iconSelect/index.vue'
 import { Modal, Message } from '@arco-design/web-vue'
 import { getRequest } from '@/api/mock_request'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()

@@ -43,6 +43,8 @@ import { usePermissionStore } from '@/store'
 import Fuse from 'fuse.js'
 import { isHttp } from '@/utils/utils'
 import { cloneDeep } from 'lodash'
+import { ref, computed, nextTick, watchEffect, watch, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const permissionStore = usePermissionStore()

@@ -18,6 +18,8 @@ import { useAppStore, useTabStore, usePermissionStore } from '@/store'
 import { listenerRouteChange } from '@/utils/route-listener'
 import { isHttp } from '@/utils/utils'
 import useMenuLayout from '@/hooks/menuLayout'
+import { computed, ref } from 'vue'
+import { useRouter, useRoute, onMounted, watch } from 'vue-router'
 
 const permissionStore = usePermissionStore()
 const appStore = useAppStore()
@@ -82,4 +84,3 @@ onMounted(async () => {
 </script>
 
 <style lang="less" scoped></style>
-import { computed } from 'vue'

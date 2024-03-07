@@ -28,6 +28,7 @@
 <script setup>
 import { updateUserPwd } from '@/api/user'
 import { Message } from '@arco-design/web-vue'
+import { ref } from 'vue'
 
 const formData = ref({
   oldPwd: '',

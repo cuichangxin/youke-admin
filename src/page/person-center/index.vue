@@ -62,6 +62,7 @@ import { useUserStore } from '@/store'
 import BasicInformation from './information.vue'
 import Password from './password.vue'
 import { getUserProfile } from '@/api/mock'
+import { reactive, ref } from 'vue'
 
 const { proxy } = getCurrentInstance()
 const userStore = useUserStore()

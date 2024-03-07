@@ -39,6 +39,8 @@ import { listenerRouteChange } from '@/utils/route-listener'
 import { useTabStore, usePermissionStore, useAppStore } from '@/store'
 import { isHttp } from '@/utils/utils'
 import { useMenuLayout } from '@/hooks/menuLayout'
+import { useRouter, useRoute } from 'vue-router'
+import { computed, watch } from 'vue'
 
 const { navSelectKeys, layoutMode } = useMenuLayout()
 const router = useRouter()

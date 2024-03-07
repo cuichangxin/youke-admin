@@ -1,6 +1,7 @@
 <script setup>
 import GlobalSetting from './layout/components/global-setting/index.vue'
 import { useAppStore } from '@/store'
+import { computed, onMounted } from 'vue'
 
 const appStore = useAppStore()
 const theme = computed(() => appStore.theme)

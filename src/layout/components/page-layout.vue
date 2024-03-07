@@ -10,6 +10,8 @@
 
 <script setup>
 import { useKeepAlive } from '@/store'
+import { toRefs } from 'vue'
+
 const { caches } = toRefs(useKeepAlive())
 </script>
 

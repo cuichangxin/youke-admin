@@ -34,6 +34,7 @@
 <script setup>
 import { updateUserProfile } from '@/api/user'
 import { Message } from '@arco-design/web-vue'
+import { watch, ref } from 'vue'
 
 const props = defineProps({
   user: {

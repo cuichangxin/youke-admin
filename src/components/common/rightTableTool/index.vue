@@ -27,8 +27,6 @@
 </template>
 
 <script setup>
-// import IconPark from '@/components/common/icon'
-
 const props = defineProps({
   columns: {
     type: [Object, Array],

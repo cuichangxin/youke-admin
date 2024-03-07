@@ -24,6 +24,8 @@
 <script setup>
 import { useAppStore, useTabStore } from '@/store'
 import tabItem from './tab-item.vue'
+import { ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const appStore = useAppStore()

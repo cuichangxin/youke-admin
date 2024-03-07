@@ -23,6 +23,7 @@
 
 <script setup>
 import icons from '@/config/icons.json'
+import { onMounted } from 'vue'
 
 const props = defineProps({
   activeIcon: {
