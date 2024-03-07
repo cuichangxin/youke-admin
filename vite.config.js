@@ -55,5 +55,10 @@ export default defineConfig(({ mode, command }) => {
         },
       },
     },
+    build: {
+      emptyOutDir: true,
+      outDir: 'docs',
+      assetsInlineLimit: 4096,
+    },
   }
 })
