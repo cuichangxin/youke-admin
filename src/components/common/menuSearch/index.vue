@@ -90,10 +90,11 @@ const onChange = () => {
   }, 500)
 }
 const clickItem = route => {
+  let name = route.item.path.toLowerCase().replace(/( |^)[a-z]/g, L => L.toUpperCase())
   if (isHttp(route.item.path)) {
-    window.open(route.item.path, '_blank')
+    window.open(route.item.path)
   } else {
-    router.push({ path: route.item.path })
+    router.push({ name: name })
   }
   hideModal()
 }
@@ -195,6 +196,8 @@ onMounted(() => {
   .search-icon {
     margin-right: 12px;
     color: rgb(var(--primary-6));
+    font-size: 22px;
+    display: flex;
   }
   .navbar-search-input-key-word {
     font-size: 12px;
