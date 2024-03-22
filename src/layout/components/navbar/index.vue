@@ -83,7 +83,7 @@ import { useUserStore, useAppStore } from '@/store'
 import { cloneDeep } from 'lodash'
 import TopNav from '@/components/common/top-nav/menu-main.vue'
 import Search from '@/components/common/menuSearch/index.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 
 const { isFullscreen, toggle: toggleFullScreen } = useFullscreen()
 const { logout, avatar } = useUserStore()

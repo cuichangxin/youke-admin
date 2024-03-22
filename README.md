@@ -1,29 +1,46 @@
-<p align="center"  style="font-size:30px">
-  carry-test-fe
+<p align="center"  style="font-size:40px">
+  youke-admin
 </p>
-基于 vue3 + vite + arco design + less
 
-给自己用的后台管理系统模板，部分代码使用若依和arco design pro，很多功能目前还没有添加和完善，慢慢来吧。
+### 🎉简介
 
-图标库使用icon-park
-[点我跳转](https://iconpark.oceanengine.com/official)
+基于vite5.x + vue3.x + arco-design2.的前端框架youke-admin，欢迎使用！
 
+### 特性
 
+- **最新技术栈**：Vue 全家桶，基于`Vue3`, `Vite`, `Vue Router` 开发
+- **UI**：全新前端框架`arco-design`
+- **Mock 数据**：内置 Mock 数据方案 搭配`mockjs`,`vite-plugin-mock`插件食用
+- **主题**：可配置的主题
+- **布局**：内置多种布局方式，满足多方需求
 
+### 感谢
 
+该项目部分代码来自[若依](https://www.ruoyi.vip/)，感谢！
 
-#### 快速开始
+### 快速开始
 
 ```bash
 
 # 进入项目目录
-cd carry-test-fe
+cd youke-admin
+```
 
+```bash
 # 安装依赖
 npm i
+```
 
+```bash
 #启动
 npm run dev
 ```
+```bash
+#打包
+npm run build:prod
+```
 
-vueuse巨好用
+### 仓库地址
+
+[youke-admin](https://github.com/paobai/vue-paobai-admin)
+
