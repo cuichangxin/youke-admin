@@ -279,12 +279,33 @@ const handleDelete = record => {
     },
   })
 }
+/** 所有菜单节点数据 */
+function getMenuAllCheckedKeys() {
+  // 目前被选中的菜单节点
+  let checkedKeys = getMenuKeys(treeRef.value.getCheckedNodes())
+  // 半选中的菜单节点
+  let halfCheckedKeys = getMenuKeys(treeRef.value.getHalfCheckedNodes())
+  checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+  return checkedKeys;
+}
+
+function getMenuKeys(tree) {
+  let keys = []
+  tree.forEach(item=>{
+    keys.push(item.id)
+    if (item?.children) {
+      getMenuKeys(item.children)
+    }
+  })
+  return keys
+}
 // 提交
 const handleOk = async () => {
   return new Promise((resolve, reject) => {
     proxy.$refs['modalFormRef'].validate((errors, record) => {
       if (!errors) {
         if (form.value.roleId != undefined) {
+          // form.value.menuIds = getMenuAllCheckedKeys()
           // proxy.$http
           //   .updateRole(form.value)
           //   .then((res) => {
@@ -298,6 +319,7 @@ const handleOk = async () => {
           //     resolve(false)
           //   })
         } else {
+          // form.value.menuIds = getMenuAllCheckedKeys()
           // proxy.$http
           //   .addRole(form.value)
           //   .then((res) => {
