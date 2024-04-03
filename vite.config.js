@@ -10,7 +10,7 @@ export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV, VITE_APP_BASE_URL, VITE_APP_BASE_API } = env
   return {
-    base: '/youke-admin/',
+    base: './',
     outDir: `docs`,
     plugins: [
       vue(),
@@ -21,7 +21,7 @@ export default defineConfig(({ mode, command }) => {
         symbolId: 'icon-[dir]-[name]',
       }),
       viteMockServe({
-        mockPath: './mock', // mock文件所在文件夹
+        mockPath: 'mock', // mock文件所在文件夹
         localEnabled: true, // 是否应用于本地
         prodEnabled: true, // 是否应用于生产
         injectCode: `import { setupProdMockServer } from '/mock/mockProdServer'; setupProdMockServer();`,
