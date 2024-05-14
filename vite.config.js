@@ -25,6 +25,7 @@ export default defineConfig(({ mode, command }) => {
         localEnabled: false, // 是否应用于本地
         prodEnabled: true, // 是否应用于生产
         injectCode: `import { setupProdMockServer } from '/mock/mockProdServer'; setupProdMockServer();`,
+        logger: true
       }),
       VueSetupExtend(),
     ],
