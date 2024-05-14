@@ -47,13 +47,13 @@ export default defineConfig(({ mode, command }) => {
       host: true,
       hmr: true,
       // open: true,
-      proxy: {
-        [VITE_APP_BASE_API]: {
-          target: VITE_APP_BASE_URL,
-          changeOrigin: true,
-          rewrite: p => p.replace(RegExp(`^${VITE_APP_BASE_API}`), ''),
-        },
-      },
+      // proxy: {
+      //   [VITE_APP_BASE_API]: {
+      //     target: VITE_APP_BASE_URL,
+      //     changeOrigin: true,
+      //     rewrite: p => p.replace(RegExp(`^${VITE_APP_BASE_API}`), ''),
+      //   },
+      // },
     },
     build: {
       emptyOutDir: true,
