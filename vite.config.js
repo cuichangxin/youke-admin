@@ -27,8 +27,12 @@ export default defineConfig(({ mode, command }) => {
       viteMockServe({
         mockPath: './mock', // mock文件所在文件夹
         localEnabled: true, // 是否应用于本地
-        prodEnabled: false, // 是否应用于生产
+        prodEnabled: true, // 是否应用于生产
         watchFiles: true, // 监视文件更改 这样更改mock的时候，不需要重新启动编译
+        injectCode: `
+          import { setupProdMockServer } from './mockProdServer';
+          setupProdMockServer();
+        `,
       }),
       VueSetupExtend(),
     ],

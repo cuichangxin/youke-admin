@@ -23,6 +23,12 @@ initApp(app)
 
 app.mount('#app')
 
+if (import.meta.env.VITE_USE_MOCK === 'true') {
+  import('../mockProdServer').then(({ setupProdMockServer }) => {
+    setupProdMockServer()
+  })
+}
+
 console.log(
   ` %c ${document.title} %c 启动成功！`,
   'color: #fadfa3; background: #030307; padding:5px 0;',
