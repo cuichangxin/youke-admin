@@ -26,7 +26,7 @@ const useUserStore = defineStore('user', {
     },
     async info() {
       return new Promise((resolve, reject) => {
-        getRequest('/getInfo')
+        getRequest('/getUserInfo')
           .then(res => {
             const { user } = res
             if (res.roles && res.roles.length > 0) {

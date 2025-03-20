@@ -343,7 +343,7 @@ export default [
     },
   },
   {
-    url: '/getInfo',
+    url: '/getUserInfo',
     method: 'get',
     response: request => {
       const res = {
