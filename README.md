@@ -40,7 +40,7 @@ npm run dev
 npm run build:prod
 ```
 
-### 仓库地址
-
-[youke-admin](https://github.com/paobai/vue-paobai-admin)
+### 账号密码
+admin
+admin123
 
